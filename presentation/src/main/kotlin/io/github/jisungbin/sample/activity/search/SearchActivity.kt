@@ -124,16 +124,20 @@ class SearchActivity : ComponentActivity() {
 
                             users.apply {
                                 when {
-                                    loadState.refresh is LoadState.Loading -> {
+                                    loadState.refresh is LoadState.Loading -> { // TODO: Why not working?
                                         item {
                                             SearchingItem(Modifier.fillParentMaxSize())
                                         }
                                     }
-                                    loadState.prepend is LoadState.Loading -> {
-                                        item { LoadingItem() }
+                                    loadState.prepend is LoadState.Loading -> { // TODO: Why not working?
+                                        item {
+                                            LoadingItem()
+                                        }
                                     }
                                     loadState.append is LoadState.Loading -> {
-                                        item { LoadingItem() }
+                                        item {
+                                            LoadingItem()
+                                        }
                                     }
                                     loadState.refresh is LoadState.Error -> {
                                         val exception = users.loadState.refresh as LoadState.Error
