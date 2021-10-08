@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.AppBarDefaults
 import androidx.compose.material.Card
@@ -33,7 +32,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -45,6 +43,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.paging.PagingData
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -55,6 +56,7 @@ import io.github.jisungbin.sample.R
 import io.github.jisungbin.sample.domain.model.user.GithubUser
 import io.github.jisungbin.sample.theme.MaterialTheme
 import io.github.jisungbin.sample.ui.SearchableTopAppBar
+import kotlinx.coroutines.flow.Flow
 
 @AndroidEntryPoint
 class SearchActivity : ComponentActivity() {
@@ -79,7 +81,7 @@ class SearchActivity : ComponentActivity() {
         val searchTopAppBarShadow =
             animateDpAsState(if (scrollState.firstVisibleItemIndex != 0) AppBarDefaults.BottomAppBarElevation else 0.dp)
 
-        val users = remember { mutableStateListOf<GithubUser>() }
+        var userPaginationFlow: Flow<PagingData<GithubUser>>? = null
 
         Scaffold(
             modifier = Modifier.fillMaxSize(),
@@ -96,22 +98,27 @@ class SearchActivity : ComponentActivity() {
                     backgroundColor = Color.White,
                     onSearchDoneClickAction = { searchFieldValue ->
                         focusManager.clearFocus()
-                        vm.searchPagination(searchFieldValue.text)
+                        userPaginationFlow = vm.searchPagination(searchFieldValue.text)
                     }
                 )
             }
         ) {
-            Crossfade(users.isEmpty()) { isUserEmpty ->
-                if (!isUserEmpty) {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(16.dp),
-                        state = scrollState,
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        items(users) { user ->
-                            UserChip(user)
+            Crossfade(userPaginationFlow != null) { isUserSearched ->
+                if (isUserSearched) {
+                    val users = userPaginationFlow!!.collectAsLazyPagingItems()
+                    if (users.itemCount > 0) {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = PaddingValues(16.dp),
+                            state = scrollState,
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            items(users) { user ->
+                                UserChip(user!!)
+                            }
                         }
+                    } else {
+                        EmptyUsers()
                     }
                 } else {
                     EmptyUsers()
