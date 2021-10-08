@@ -38,5 +38,6 @@ android {
 }
 
 dependencies {
+    implementation(Dependencies.Paging.Domain)
     Dependencies.essential.forEach(::implementation)
 }

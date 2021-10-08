@@ -36,6 +36,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,6 +63,7 @@ import io.github.jisungbin.sample.domain.model.user.GithubUser
 import io.github.jisungbin.sample.theme.MaterialTheme
 import io.github.jisungbin.sample.ui.SearchableTopAppBar
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SearchActivity : ComponentActivity() {
@@ -80,6 +82,7 @@ class SearchActivity : ComponentActivity() {
         val vm: SearchViewModel = viewModel()
         val scrollState = rememberLazyListState()
         val focusManager = LocalFocusManager.current
+        val coroutineScope = rememberCoroutineScope()
 
         val searchingState = remember { mutableStateOf(false) }
         val searchFieldState = remember { mutableStateOf(TextFieldValue()) }
@@ -102,8 +105,10 @@ class SearchActivity : ComponentActivity() {
                     primaryColor = Color.Black,
                     backgroundColor = Color.White,
                     onSearchDoneClickAction = { searchFieldValue ->
-                        focusManager.clearFocus()
-                        userPaginationFlow = vm.searchPagination(searchFieldValue.text)
+                        coroutineScope.launch {
+                            focusManager.clearFocus()
+                            userPaginationFlow = vm.searchPagination(searchFieldValue.text)
+                        }
                     }
                 )
             }
@@ -123,36 +128,22 @@ class SearchActivity : ComponentActivity() {
                             }
 
                             users.apply {
+                                val exception = loadState.refresh as? LoadState.Error
+                                    ?: loadState.prepend as? LoadState.Error
+                                    ?: loadState.append as? LoadState.Error
+
                                 when {
                                     loadState.refresh is LoadState.Loading -> { // TODO: Why not working?
                                         item {
                                             SearchingItem(Modifier.fillParentMaxSize())
                                         }
                                     }
-                                    loadState.prepend is LoadState.Loading -> { // TODO: Why not working?
+                                    loadState.prepend is LoadState.Loading || loadState.append is LoadState.Loading -> { // TODO: Why not prepend working?
                                         item {
                                             LoadingItem()
                                         }
                                     }
-                                    loadState.append is LoadState.Loading -> {
-                                        item {
-                                            LoadingItem()
-                                        }
-                                    }
-                                    loadState.refresh is LoadState.Error -> {
-                                        val exception = users.loadState.refresh as LoadState.Error
-                                        item {
-                                            PagingExceptionItem(exception.error)
-                                        }
-                                    }
-                                    loadState.prepend is LoadState.Error -> {
-                                        val exception = users.loadState.prepend as LoadState.Error
-                                        item {
-                                            PagingExceptionItem(exception.error)
-                                        }
-                                    }
-                                    loadState.append is LoadState.Error -> {
-                                        val exception = users.loadState.append as LoadState.Error
+                                    exception != null -> {
                                         item {
                                             PagingExceptionItem(exception.error)
                                         }

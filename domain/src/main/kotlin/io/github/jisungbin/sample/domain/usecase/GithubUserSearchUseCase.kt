@@ -10,8 +10,18 @@
 package io.github.jisungbin.sample.domain.usecase
 
 import io.github.jisungbin.sample.domain.repo.GithubUserRepo
+import kotlinx.coroutines.CoroutineScope
 
 class GithubUserSearchUseCase(private val repo: GithubUserRepo) {
-    suspend operator fun invoke(query: String, page: Int, perPage: Int) =
-        repo.search(query, page, perPage)
+    suspend operator fun invoke(
+        query: String,
+        scope: CoroutineScope,
+        perPage: Int,
+        maxSize: Int
+    ) = repo.searchPagination(
+        query = query,
+        scope = scope,
+        perPage = perPage,
+        maxSize = maxSize
+    )
 }

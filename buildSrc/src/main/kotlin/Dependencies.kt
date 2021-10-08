@@ -49,6 +49,7 @@ object Versions {
     object Jetpack {
         const val Room = "2.4.0-alpha05"
         const val Hilt = "2.39.1"
+        const val Paging = "3.0.1"
     }
 
     object Compose {
@@ -132,4 +133,11 @@ object Dependencies {
     )
 
     val util = listOf("io.github.jisungbin:erratum:${Versions.Util.Erratum}")
+
+    object Paging {
+        const val Master = "androidx.paging:paging-runtime:${Versions.Jetpack.Paging}"
+
+        // alternatively - without Android dependencies for tests
+        const val Domain = "androidx.paging:paging-common:${Versions.Jetpack.Paging}"
+    }
 }

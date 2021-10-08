@@ -17,7 +17,7 @@ import io.github.jisungbin.sample.data.local.entity.GithubUserEntity
 import io.github.jisungbin.sample.data.local.entity.GithubUserInformationEntity
 
 @Database(version = 1, entities = [GithubUserEntity::class, GithubUserInformationEntity::class])
-abstract class GithubUserDatabase : RoomDatabase() {
+internal abstract class GithubUserDatabase : RoomDatabase() {
     abstract val dao: GithubUserDao
 
     companion object {

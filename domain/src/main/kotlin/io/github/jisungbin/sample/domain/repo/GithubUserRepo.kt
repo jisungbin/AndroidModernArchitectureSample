@@ -9,11 +9,18 @@
 
 package io.github.jisungbin.sample.domain.repo
 
+import androidx.paging.PagingData
 import io.github.jisungbin.sample.domain.GithubResult
 import io.github.jisungbin.sample.domain.model.user.GithubUser
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 
 interface GithubUserRepo {
     suspend fun search(query: String, page: Int, perPage: Int): Flow<GithubResult<List<GithubUser>>>
-    // suspend fun getInformation(userId: String): Flow<GithubResult<List<GithubUser>>>
+    suspend fun searchPagination(
+        query: String,
+        scope: CoroutineScope,
+        perPage: Int,
+        maxSize: Int
+    ): Flow<PagingData<GithubUser>>
 }

@@ -12,5 +12,5 @@ package io.github.jisungbin.sample.data.mapper
 import io.github.jisungbin.sample.data.local.entity.GithubUserEntity
 import io.github.jisungbin.sample.domain.model.user.GithubUser
 
-fun List<GithubUserEntity>.toDomain() =
+internal fun List<GithubUserEntity>.toDomain() =
     map { user -> GithubUser(loginId = user.loginId, avatarUrl = user.avatarUrl) }

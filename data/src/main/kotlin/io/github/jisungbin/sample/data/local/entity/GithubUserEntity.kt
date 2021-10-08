@@ -13,7 +13,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class GithubUserEntity(
+internal data class GithubUserEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val loginId: String,
     val avatarUrl: String,

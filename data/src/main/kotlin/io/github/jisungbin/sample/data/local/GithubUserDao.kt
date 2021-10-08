@@ -17,7 +17,7 @@ import io.github.jisungbin.sample.data.local.entity.GithubUserEntity
 import io.github.jisungbin.sample.data.local.entity.GithubUserInformationEntity
 
 @Dao
-interface GithubUserDao {
+internal interface GithubUserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUsers(githubUser: List<GithubUserEntity>)
 
@@ -26,6 +26,9 @@ interface GithubUserDao {
 
     @Query("SELECT * FROM GithubUserEntity WHERE searchKeyword LIKE :searchKeyword")
     suspend fun getUsers(searchKeyword: String): List<GithubUserEntity>
+
+    @Query("SELECT * FROM GithubUserEntity")
+    suspend fun getAllUsers(): List<GithubUserEntity>
 
     @Query("SELECT * FROM GithubUserInformationEntity WHERE loginId LIKE :loginId")
     suspend fun getUserInformation(loginId: String): GithubUserInformationEntity

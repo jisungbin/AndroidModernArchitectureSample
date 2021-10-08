@@ -47,6 +47,8 @@ android {
 }
 
 dependencies {
+    implementation(Dependencies.Paging.Master)
+
     implementation(project(":domain"))
 
     Dependencies.room.forEach(::implementation)

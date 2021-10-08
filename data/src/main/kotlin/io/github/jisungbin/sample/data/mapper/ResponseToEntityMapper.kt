@@ -12,7 +12,7 @@ package io.github.jisungbin.sample.data.mapper
 import io.github.jisungbin.sample.data.local.entity.GithubUserEntity
 import io.github.jisungbin.sample.data.model.search.GithubSearchResponse
 
-fun GithubSearchResponse.toEntity(searchKeyword: String) = items.map { user ->
+internal fun GithubSearchResponse.toEntity(searchKeyword: String) = items.map { user ->
     GithubUserEntity(
         loginId = user.loginId,
         avatarUrl = user.avatarUrl,

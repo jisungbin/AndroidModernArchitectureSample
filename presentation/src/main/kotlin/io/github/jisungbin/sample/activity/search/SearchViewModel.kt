@@ -11,15 +11,8 @@ package io.github.jisungbin.sample.activity.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.jisungbin.sample.activity.search.paging.UserSearchPagingSource
-import io.github.jisungbin.sample.domain.model.user.GithubUser
 import io.github.jisungbin.sample.domain.usecase.GithubUserSearchUseCase
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,15 +20,12 @@ class SearchViewModel @Inject constructor(
     private val githubUserSearchUseCase: GithubUserSearchUseCase
 ) : ViewModel() {
     private val defaultPageSize = 30
+    private val defaultMaxSize = 100
 
-    fun searchPagination(query: String): Flow<PagingData<GithubUser>> {
-        return Pager(
-            config = PagingConfig(
-                pageSize = defaultPageSize,
-                enablePlaceholders = false,
-                maxSize = 100
-            ),
-            pagingSourceFactory = { UserSearchPagingSource(githubUserSearchUseCase, query) }
-        ).flow.cachedIn(viewModelScope)
-    }
+    suspend fun searchPagination(query: String) = githubUserSearchUseCase(
+        query = query,
+        scope = viewModelScope,
+        perPage = defaultPageSize,
+        maxSize = defaultMaxSize
+    )
 }
