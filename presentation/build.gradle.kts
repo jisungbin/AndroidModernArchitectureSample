@@ -78,7 +78,7 @@ dependencies {
     implementation(project(":domain"))
 
     Dependencies.ui.forEach(::implementation)
-    Dependencies.util.forEach(::implementation)
+    // Dependencies.util.forEach(::implementation)
     Dependencies.jackson.forEach(::implementation)
     Dependencies.compose.forEach(::implementation)
     Dependencies.retrofit.forEach(::implementation)

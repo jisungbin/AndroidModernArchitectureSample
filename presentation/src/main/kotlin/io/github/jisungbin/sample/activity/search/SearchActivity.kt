@@ -101,10 +101,15 @@ class SearchActivity : ComponentActivity() {
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 SearchableTopAppBar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
                     title = stringResource(R.string.app_name),
                     elevation = searchTopAppBarShadow.value,
                     searchingState = searchingState,
                     searchFieldState = searchFieldState,
+                    primaryColor = Color.Black,
+                    backgroundColor = Color.White,
                     onSearchDoneClickAction = { searchFieldValue ->
                         vm.search(query = searchFieldValue.text, page = 1) // todo: pagination
                         println(searchFieldValue)
@@ -114,7 +119,7 @@ class SearchActivity : ComponentActivity() {
         ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(16.dp),
+                contentPadding = PaddingValues(8.dp),
                 state = scrollState
             ) {
                 items(users) { user ->

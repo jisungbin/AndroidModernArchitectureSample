@@ -10,6 +10,7 @@
 package io.github.jisungbin.sample.ui
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -37,6 +38,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.jisungbin.sample.R
 
@@ -52,7 +54,12 @@ fun SearchableTopAppBar(
     backgroundColor: Color = MaterialTheme.colors.primarySurface,
     iconTint: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
 ) {
-    TopAppBar(modifier = modifier, backgroundColor = backgroundColor, elevation = elevation) {
+    TopAppBar(
+        modifier = modifier,
+        backgroundColor = backgroundColor,
+        elevation = elevation,
+        contentPadding = PaddingValues(horizontal = 16.dp)
+    ) {
         if (searchingState.value) {
             TextField(
                 value = searchFieldState.value,

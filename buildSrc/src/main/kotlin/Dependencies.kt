@@ -23,7 +23,7 @@ object Application {
 
 object Versions {
     object Essential {
-        const val Kotlin = "1.5.31"
+        const val Kotlin = "1.5.30"
         const val CoreKtx = "1.6.0"
         const val Coroutines = "1.5.1"
         const val Gradle = "7.1.0-alpha05"
@@ -36,28 +36,28 @@ object Versions {
 
     object Util {
         const val Erratum = "1.0.1"
-        const val Jackson = "2.12.5"
+        const val Jackson = "2.13.0"
         const val LeakCanary = "2.7"
         const val CheckDependencyUpdates = "1.5.0"
     }
 
     object Network {
-        const val OkHttp = "4.9.1"
+        const val OkHttp = "4.9.2"
         const val Retrofit = "2.9.0"
     }
 
     object Jetpack {
-        const val Room = "2.3.0"
-        const val Hilt = "2.38.1"
+        const val Room = "2.4.0-alpha05"
+        const val Hilt = "2.39.1"
     }
 
     object Compose {
-        const val Lottie = "4.1.0"
-        const val Master = "1.0.2"
+        const val Lottie = "4.2.0"
+        const val Master = "1.0.3"
         const val Activity = "1.3.1"
         const val SwipeRefresh = "0.19.0"
         const val Paging = "1.0.0-alpha13"
-        const val LandscapistCoil = "1.3.6"
+        const val LandscapistCoil = "1.3.7"
         const val Lifecycle = "1.0.0-alpha07"
         const val ConstraintLayout = "1.0.0-beta01"
     }
