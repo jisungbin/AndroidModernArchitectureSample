@@ -14,6 +14,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,6 +32,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,6 +44,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.skydoves.landscapist.coil.CoilImage
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jisungbin.sample.R
@@ -106,15 +112,19 @@ class SearchActivity : ComponentActivity() {
                 )
             }
         ) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(16.dp),
-                state = scrollState,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(users) { user ->
-                    UserChip(user)
+            if (users.isNotEmpty()) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(16.dp),
+                    state = scrollState,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(users) { user ->
+                        UserChip(user)
+                    }
                 }
+            } else {
+                EmptyUsers()
             }
         }
     }
@@ -158,6 +168,28 @@ class SearchActivity : ComponentActivity() {
             } else {
                 println(state.exception!!) // todo: handle exception
             }
+        }
+    }
+
+    @Composable
+    private fun EmptyUsers() {
+        val lottieComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.empty))
+
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            LottieAnimation(
+                modifier = Modifier.size(250.dp),
+                iterations = LottieConstants.IterateForever,
+                composition = lottieComposition,
+            )
+            Text(
+                modifier = Modifier.padding(top = 30.dp),
+                text = stringResource(R.string.activity_search_text_empty_display_users),
+                color = Color.Gray
+            )
         }
     }
 }
