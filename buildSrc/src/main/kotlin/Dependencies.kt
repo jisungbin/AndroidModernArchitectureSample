@@ -55,6 +55,8 @@ object Versions {
         const val Lottie = "4.1.0"
         const val Master = "1.0.2"
         const val Activity = "1.3.1"
+        const val SwipeRefresh = "0.19.0"
+        const val Paging = "1.0.0-alpha13"
         const val LandscapistCoil = "1.3.6"
         const val Lifecycle = "1.0.0-alpha07"
         const val ConstraintLayout = "1.0.0-beta01"
@@ -118,12 +120,14 @@ object Dependencies {
 
     val compose = listOf(
         "androidx.compose.ui:ui:${Versions.Compose.Master}",
+        "androidx.paging:paging-compose:${Versions.Compose.Paging}",
         "androidx.compose.ui:ui-tooling:${Versions.Compose.Master}",
         "com.airbnb.android:lottie-compose:${Versions.Compose.Lottie}",
         "androidx.compose.compiler:compiler:${Versions.Compose.Master}",
         "androidx.compose.material:material:${Versions.Compose.Master}",
         "androidx.activity:activity-compose:${Versions.Compose.Activity}",
         "androidx.lifecycle:lifecycle-viewmodel-compose:${Versions.Compose.Lifecycle}",
+        "com.google.accompanist:accompanist-swiperefresh:${Versions.Compose.SwipeRefresh}",
         "androidx.constraintlayout:constraintlayout-compose:${Versions.Compose.ConstraintLayout}"
     )
 

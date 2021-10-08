@@ -20,6 +20,14 @@ android {
         minSdk = Application.minSdk
         targetSdk = Application.targetSdk
         multiDexEnabled = true
+
+        kapt {
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas")
+            }
+
+            correctErrorTypes = true
+        }
     }
 
     sourceSets {
