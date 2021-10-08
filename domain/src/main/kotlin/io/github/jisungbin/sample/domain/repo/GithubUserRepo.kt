@@ -14,6 +14,6 @@ import io.github.jisungbin.sample.domain.model.user.GithubUser
 import kotlinx.coroutines.flow.Flow
 
 interface GithubUserRepo {
-    suspend fun search(query: String, page: Int): Flow<GithubResult<List<GithubUser>>>
+    suspend fun search(query: String, page: Int, perPage: Int): Flow<GithubResult<List<GithubUser>>>
     // suspend fun getInformation(userId: String): Flow<GithubResult<List<GithubUser>>>
 }

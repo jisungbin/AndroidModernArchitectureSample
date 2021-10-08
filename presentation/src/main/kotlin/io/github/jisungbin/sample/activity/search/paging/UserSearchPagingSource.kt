@@ -31,7 +31,8 @@ class UserSearchPagingSource(
             CoroutineScope(Dispatchers.IO).launch {
                 githubUserSearchUseCase(
                     query = query,
-                    page = nextPage
+                    page = nextPage,
+                    perPage = params.loadSize
                 ).collect { searchedUserResult ->
                     searchedUserResult.doWhen(
                         onSuccess = { users ->

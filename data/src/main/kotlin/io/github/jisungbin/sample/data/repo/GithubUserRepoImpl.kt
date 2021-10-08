@@ -30,10 +30,14 @@ class GithubUserRepoImpl(private val context: Context, retrofit: Retrofit) : Git
     private val networkAvailable get() = NetworkUtil.isNetworkAvailable(context)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override suspend fun search(query: String, @IntRange(from = 1) page: Int) = callbackFlow {
+    override suspend fun search(
+        query: String,
+        @IntRange(from = 1) page: Int,
+        @IntRange(from = 1, to = 101) perPage: Int
+    ) = callbackFlow {
         try {
             if (networkAvailable) {
-                val request = api.search(query, page)
+                val request = api.search(query, page, perPage)
                 trySend(
                     if (request.isValid()) {
                         db.dao.insertUsers(request.body()!!.toEntity(query))

@@ -12,5 +12,6 @@ package io.github.jisungbin.sample.domain.usecase
 import io.github.jisungbin.sample.domain.repo.GithubUserRepo
 
 class GithubUserSearchUseCase(private val repo: GithubUserRepo) {
-    suspend operator fun invoke(query: String, page: Int) = repo.search(query, page)
+    suspend operator fun invoke(query: String, page: Int, perPage: Int) =
+        repo.search(query, page, perPage)
 }

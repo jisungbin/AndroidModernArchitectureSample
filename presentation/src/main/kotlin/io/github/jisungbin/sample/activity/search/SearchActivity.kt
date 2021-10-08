@@ -10,6 +10,7 @@
 package io.github.jisungbin.sample.activity.search
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.Crossfade
@@ -34,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,6 +45,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
@@ -55,7 +58,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.github.jisungbin.sample.R
 import io.github.jisungbin.sample.domain.model.user.GithubUser
 import io.github.jisungbin.sample.theme.MaterialTheme
+import io.github.jisungbin.sample.ui.Loading
 import io.github.jisungbin.sample.ui.SearchableTopAppBar
+import io.github.jisungbin.sample.util.extension.toast
 import kotlinx.coroutines.flow.Flow
 
 @AndroidEntryPoint
@@ -81,7 +86,7 @@ class SearchActivity : ComponentActivity() {
         val searchTopAppBarShadow =
             animateDpAsState(if (scrollState.firstVisibleItemIndex != 0) AppBarDefaults.BottomAppBarElevation else 0.dp)
 
-        var userPaginationFlow: Flow<PagingData<GithubUser>>? = null
+        var userPaginationFlow by remember { mutableStateOf<Flow<PagingData<GithubUser>>?>(null) }
 
         Scaffold(
             modifier = Modifier.fillMaxSize(),
@@ -115,6 +120,40 @@ class SearchActivity : ComponentActivity() {
                         ) {
                             items(users) { user ->
                                 UserChip(user!!)
+                            }
+
+                            users.apply {
+                                when {
+                                    loadState.append is LoadState.Loading -> {
+                                        item { Loading() }
+                                    }
+                                    loadState.refresh is LoadState.Error -> {
+                                        val exception = users.loadState.refresh as LoadState.Error
+                                        item {
+                                            EmptyUsers()
+                                        }
+                                        toast(
+                                            message = getString(
+                                                R.string.activity_search_toast_exception,
+                                                exception.toString()
+                                            ),
+                                            length = Toast.LENGTH_LONG
+                                        )
+                                    }
+                                    loadState.append is LoadState.Error -> {
+                                        val exception = users.loadState.append as LoadState.Error
+                                        item {
+                                            EmptyUsers()
+                                        }
+                                        toast(
+                                            message = getString(
+                                                R.string.activity_search_toast_exception,
+                                                exception.toString()
+                                            ),
+                                            length = Toast.LENGTH_LONG
+                                        )
+                                    }
+                                }
                             }
                         }
                     } else {
