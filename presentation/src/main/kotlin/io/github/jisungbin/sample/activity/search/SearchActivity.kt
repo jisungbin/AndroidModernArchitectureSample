@@ -31,11 +31,9 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,17 +48,14 @@ import io.github.jisungbin.sample.R
 import io.github.jisungbin.sample.activity.search.mvi.MviUserSearchState
 import io.github.jisungbin.sample.domain.model.user.GithubUser
 import io.github.jisungbin.sample.theme.MaterialTheme
-import io.github.jisungbin.sample.theme.SystemUiController
 import io.github.jisungbin.sample.ui.SearchableTopAppBar
 import org.orbitmvi.orbit.viewmodel.observe
 
 @AndroidEntryPoint
 class SearchActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        SystemUiController(window).setSystemBarsColor(Color.White)
         setContent {
             MaterialTheme {
                 Screen()
@@ -71,16 +66,12 @@ class SearchActivity : ComponentActivity() {
     @Composable
     private fun Screen() {
         val vm: SearchViewModel = viewModel()
+        val scrollState = rememberLazyListState()
 
         val searchingState = remember { mutableStateOf(false) }
         val searchFieldState = remember { mutableStateOf(TextFieldValue()) }
-
-        var showElevationState by remember { mutableStateOf(true) }
-        val scrollState = rememberLazyListState()
-        showElevationState = scrollState.firstVisibleItemIndex == 0
-
         val searchTopAppBarShadow =
-            animateDpAsState(if (!showElevationState) AppBarDefaults.BottomAppBarElevation else 0.dp)
+            animateDpAsState(if (scrollState.firstVisibleItemIndex != 0) AppBarDefaults.BottomAppBarElevation else 0.dp)
 
         val users = remember { mutableStateListOf<GithubUser>() }
 
