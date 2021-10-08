@@ -13,4 +13,4 @@ import io.github.jisungbin.sample.data.local.entity.GithubUserEntity
 import io.github.jisungbin.sample.domain.model.user.GithubUser
 
 fun List<GithubUserEntity>.toDomain() =
-    map { user -> GithubUser(login = user.loginId, avatarUrl = user.avatarUrl) }
+    map { user -> GithubUser(loginId = user.loginId, avatarUrl = user.avatarUrl) }

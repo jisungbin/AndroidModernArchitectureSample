@@ -13,4 +13,4 @@ import io.github.jisungbin.sample.data.model.search.GithubSearchResponse
 import io.github.jisungbin.sample.domain.model.user.GithubUser
 
 fun GithubSearchResponse.toDomain() =
-    items.map { user -> GithubUser(login = user.loginId, avatarUrl = user.avatarUrl) }
+    items.map { user -> GithubUser(loginId = user.loginId, avatarUrl = user.avatarUrl) }

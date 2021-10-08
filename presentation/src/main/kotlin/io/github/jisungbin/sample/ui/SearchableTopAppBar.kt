@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentAlpha
@@ -30,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
@@ -41,6 +44,7 @@ fun SearchableTopAppBar(
     title: String,
     searchingState: MutableState<Boolean>,
     searchFieldState: MutableState<TextFieldValue>,
+    onSearchDoneClickAction: (TextFieldValue) -> Unit,
     primaryColor: Color = LocalContentColor.current.copy(LocalContentAlpha.current),
     backgroundColor: Color = MaterialTheme.colors.primarySurface,
     iconTint: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
@@ -69,6 +73,8 @@ fun SearchableTopAppBar(
                         }
                     }
                 },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions { onSearchDoneClickAction(searchFieldState.value) },
                 singleLine = true,
                 colors = TextFieldDefaults.textFieldColors(
                     textColor = primaryColor,

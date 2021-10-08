@@ -9,4 +9,4 @@
 
 package io.github.jisungbin.sample.domain.model.user
 
-data class GithubUser(val login: String, val avatarUrl: String)
+data class GithubUser(val loginId: String, val avatarUrl: String)
