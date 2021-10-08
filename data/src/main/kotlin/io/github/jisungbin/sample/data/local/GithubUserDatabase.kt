@@ -16,7 +16,7 @@ import androidx.room.RoomDatabase
 import io.github.jisungbin.sample.data.local.entity.GithubUserEntity
 import io.github.jisungbin.sample.data.local.entity.GithubUserInformationEntity
 
-@Database(version = 0, entities = [GithubUserEntity::class, GithubUserInformationEntity::class])
+@Database(version = 1, entities = [GithubUserEntity::class, GithubUserInformationEntity::class])
 abstract class GithubUserDatabase : RoomDatabase() {
     abstract val dao: GithubUserDao
 

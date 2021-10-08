@@ -33,13 +33,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import io.github.jisungbin.sample.R
 
 @Composable
@@ -52,7 +51,6 @@ fun SearchableTopAppBar(
     onSearchDoneClickAction: (TextFieldValue) -> Unit,
     primaryColor: Color = LocalContentColor.current.copy(LocalContentAlpha.current),
     backgroundColor: Color = MaterialTheme.colors.primarySurface,
-    iconTint: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
 ) {
     TopAppBar(
         modifier = modifier,
@@ -62,25 +60,32 @@ fun SearchableTopAppBar(
     ) {
         if (searchingState.value) {
             TextField(
+                modifier = Modifier.fillMaxWidth(),
                 value = searchFieldState.value,
                 onValueChange = { value ->
                     searchFieldState.value = value
                 },
-                modifier = Modifier.fillMaxWidth(),
-                textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
+                placeholder = {
+                    Text(
+                        text = stringResource(R.string.activity_search_topappbar_placeholder_input),
+                        color = Color.LightGray
+                    )
+                },
                 trailingIcon = {
-                    if (searchFieldState.value.text.isNotEmpty()) {
-                        IconButton(
-                            onClick = {
+                    IconButton(
+                        onClick = {
+                            if (searchFieldState.value.text.isNotEmpty()) {
                                 searchFieldState.value = TextFieldValue("")
+                            } else {
+                                searchingState.value = false
                             }
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_round_close_24),
-                                contentDescription = null,
-                                tint = iconTint
-                            )
                         }
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_round_close_24),
+                            contentDescription = null,
+                            tint = primaryColor
+                        )
                     }
                 },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -110,15 +115,11 @@ fun SearchableTopAppBar(
                     overflow = TextOverflow.Ellipsis,
                     color = primaryColor
                 )
-                IconButton(
-                    onClick = {
-                        searchingState.value = true
-                    }
-                ) {
+                IconButton(onClick = { searchingState.value = true }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_round_search_24),
                         contentDescription = null,
-                        tint = iconTint
+                        tint = primaryColor
                     )
                 }
             }

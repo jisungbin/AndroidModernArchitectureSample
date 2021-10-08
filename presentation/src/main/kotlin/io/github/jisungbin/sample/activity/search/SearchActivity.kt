@@ -170,6 +170,7 @@ class SearchActivity : ComponentActivity() {
         state: MviUserSearchState,
         updateSearchedUserState: (List<GithubUser>) -> Unit
     ) {
+        println(state)
         if (state.loaded) {
             if (!state.isException()) {
                 updateSearchedUserState(state.users)

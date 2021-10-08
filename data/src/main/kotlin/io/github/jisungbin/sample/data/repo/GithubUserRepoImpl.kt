@@ -30,26 +30,25 @@ class GithubUserRepoImpl(private val context: Context, retrofit: Retrofit) :
     private val networkAvailable get() = NetworkUtil.isNetworkAvailable(context)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override suspend fun search(query: String, page: Int) =
-        callbackFlow {
-            try {
-                if (networkAvailable) {
-                    val request = api.search(query, page)
-                    trySend(
-                        if (request.isValid()) {
-                            db.dao.insertUsers(request.body()!!.toEntity(query))
-                            GithubResult.Success(request.body()!!.toDomain())
-                        } else {
-                            request.toFailResult("search")
-                        }
-                    )
-                } else {
-                    trySend(GithubResult.Success(db.dao.getUsers(query).toDomain()))
-                }
-            } catch (exception: Exception) {
-                trySend(GithubResult.Fail(exception))
+    override suspend fun search(query: String, page: Int) = callbackFlow {
+        try {
+            if (networkAvailable) {
+                val request = api.search(query, page)
+                trySend(
+                    if (request.isValid()) {
+                        db.dao.insertUsers(request.body()!!.toEntity(query))
+                        GithubResult.Success(request.body()!!.toDomain())
+                    } else {
+                        request.toFailResult("search")
+                    }
+                )
+            } else {
+                trySend(GithubResult.Success(db.dao.getUsers(query).toDomain()))
             }
-
-            close()
+        } catch (exception: Exception) {
+            trySend(GithubResult.Fail(exception))
         }
+
+        close()
+    }
 }

@@ -12,14 +12,13 @@ package io.github.jisungbin.sample.data.api
 import io.github.jisungbin.sample.data.model.search.GithubSearchResponse
 import retrofit2.Response
 import retrofit2.http.GET
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface GithubUserApi {
     @GET("/search/users")
     suspend fun search(
         @Query("q") query: String,
-        @Path("page") page: Int
+        @Query("page") page: Int
     ): Response<GithubSearchResponse>
 
     /*@GET("/search/users")

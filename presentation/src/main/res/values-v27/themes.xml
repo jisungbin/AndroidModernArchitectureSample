@@ -2,7 +2,7 @@
   ~ AndroidModernArchitectureSample © 2021 Ji Sungbin. all rights reserved.
   ~ AndroidModernArchitectureSample license is under the Apache-2.0.
   ~
-  ~ [themes.xml] created by Ji Sungbin on 21. 10. 8. 오전 11:06
+  ~ [themes.xml] created by Ji Sungbin on 21. 10. 8. 오후 9:19
   ~
   ~ Please see: https://github.com/jisungbin/AndroidModernArchitectureSample/blob/master/LICENSE
   -->
@@ -13,5 +13,6 @@
         <item name="android:statusBarColor">#fff</item>
         <item name="android:navigationBarColor">#fff</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
     </style>
 </resources>

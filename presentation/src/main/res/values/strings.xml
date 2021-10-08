@@ -9,4 +9,5 @@
 
 <resources>
     <string name="app_name">Github Users</string>
+    <string name="activity_search_topappbar_placeholder_input">입력…</string>
 </resources>

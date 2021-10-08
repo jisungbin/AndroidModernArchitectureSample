@@ -11,13 +11,12 @@ package io.github.jisungbin.sample
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
-
-// import io.github.jisungbin.erratum.Erratum
+import io.github.jisungbin.erratum.Erratum
 
 @HiltAndroidApp
 class GithubUsers : Application() {
     override fun onCreate() {
         super.onCreate()
-        // Erratum.setup(this)
+        Erratum.setup(this)
     }
 }
