@@ -10,7 +10,6 @@
 package io.github.jisungbin.sample.activity.search
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.Crossfade
@@ -25,10 +24,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.AppBarDefaults
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -43,6 +44,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
@@ -58,9 +60,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.github.jisungbin.sample.R
 import io.github.jisungbin.sample.domain.model.user.GithubUser
 import io.github.jisungbin.sample.theme.MaterialTheme
-import io.github.jisungbin.sample.ui.Loading
 import io.github.jisungbin.sample.ui.SearchableTopAppBar
-import io.github.jisungbin.sample.util.extension.toast
 import kotlinx.coroutines.flow.Flow
 
 @AndroidEntryPoint
@@ -118,40 +118,40 @@ class SearchActivity : ComponentActivity() {
                             state = scrollState,
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            items(users) { user ->
+                            items(items = users) { user ->
                                 UserChip(user!!)
                             }
 
                             users.apply {
                                 when {
+                                    loadState.refresh is LoadState.Loading -> {
+                                        item {
+                                            SearchingItem(Modifier.fillParentMaxSize())
+                                        }
+                                    }
+                                    loadState.prepend is LoadState.Loading -> {
+                                        item { LoadingItem() }
+                                    }
                                     loadState.append is LoadState.Loading -> {
-                                        item { Loading() }
+                                        item { LoadingItem() }
                                     }
                                     loadState.refresh is LoadState.Error -> {
                                         val exception = users.loadState.refresh as LoadState.Error
                                         item {
-                                            EmptyUsers()
+                                            PagingExceptionItem(exception.error)
                                         }
-                                        toast(
-                                            message = getString(
-                                                R.string.activity_search_toast_exception,
-                                                exception.toString()
-                                            ),
-                                            length = Toast.LENGTH_LONG
-                                        )
+                                    }
+                                    loadState.prepend is LoadState.Error -> {
+                                        val exception = users.loadState.prepend as LoadState.Error
+                                        item {
+                                            PagingExceptionItem(exception.error)
+                                        }
                                     }
                                     loadState.append is LoadState.Error -> {
                                         val exception = users.loadState.append as LoadState.Error
                                         item {
-                                            EmptyUsers()
+                                            PagingExceptionItem(exception.error)
                                         }
-                                        toast(
-                                            message = getString(
-                                                R.string.activity_search_toast_exception,
-                                                exception.toString()
-                                            ),
-                                            length = Toast.LENGTH_LONG
-                                        )
                                     }
                                 }
                             }
@@ -214,5 +214,53 @@ class SearchActivity : ComponentActivity() {
                 color = Color.Gray
             )
         }
+    }
+
+    @Composable
+    private fun SearchingItem(modifier: Modifier) {
+        val lottieComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.searching))
+
+        Column(
+            modifier = modifier,
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            LottieAnimation(
+                modifier = Modifier.size(250.dp),
+                iterations = LottieConstants.IterateForever,
+                composition = lottieComposition,
+            )
+        }
+    }
+
+    @Composable
+    private fun PagingExceptionItem(throwable: Throwable) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(15.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = stringResource(
+                    R.string.activity_search_text_exception,
+                    throwable.message.toString()
+                ),
+                color = Color.Gray,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+
+    @Composable
+    private fun LoadingItem() {
+        CircularProgressIndicator(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .wrapContentWidth(Alignment.CenterHorizontally)
+        )
     }
 }

@@ -10,13 +10,22 @@
 package io.github.jisungbin.sample
 
 import android.app.Application
+import android.widget.Toast
 import dagger.hilt.android.HiltAndroidApp
 import io.github.jisungbin.erratum.Erratum
+import java.util.Calendar
 
 @HiltAndroidApp
 class GithubUsers : Application() {
     override fun onCreate() {
         super.onCreate()
         Erratum.setup(this)
+
+        val builtDate = Calendar.getInstance().apply { timeInMillis = BuildConfig.TIMESTAMP }
+        val builtTime = "${builtDate.get(Calendar.HOUR_OF_DAY)}h" +
+            " ${builtDate.get(Calendar.MINUTE)}m " +
+            "${builtDate.get(Calendar.SECOND)}s"
+
+        Toast.makeText(applicationContext, "Built at: $builtTime", Toast.LENGTH_LONG).show()
     }
 }
