@@ -13,12 +13,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,22 +31,19 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.request.ImageRequest
 import com.skydoves.landscapist.coil.CoilImage
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jisungbin.sample.R
@@ -77,12 +75,12 @@ class SearchActivity : ComponentActivity() {
         val searchingState = remember { mutableStateOf(false) }
         val searchFieldState = remember { mutableStateOf(TextFieldValue()) }
 
-        val scrollingUpState = vm.scrollingUp.observeAsState(true).value
+        var showElevationState by remember { mutableStateOf(true) }
         val scrollState = rememberLazyListState()
-        vm.updateScrollPosition(scrollState.firstVisibleItemIndex)
+        showElevationState = scrollState.firstVisibleItemIndex == 0
 
         val searchTopAppBarShadow =
-            animateDpAsState(if (!scrollingUpState) 0.dp else AppBarDefaults.BottomAppBarElevation)
+            animateDpAsState(if (!showElevationState) AppBarDefaults.BottomAppBarElevation else 0.dp)
 
         val users = remember { mutableStateListOf<GithubUser>() }
 
@@ -119,8 +117,9 @@ class SearchActivity : ComponentActivity() {
         ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(8.dp),
-                state = scrollState
+                contentPadding = PaddingValues(16.dp),
+                state = scrollState,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 items(users) { user ->
                     UserChip(user)
@@ -134,10 +133,12 @@ class SearchActivity : ComponentActivity() {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight(),
-            backgroundColor = Color.White
+                .height(100.dp),
+            backgroundColor = Color.White,
+            elevation = 2.dp
         ) {
             Row(
+                modifier = Modifier.padding(horizontal = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -147,20 +148,9 @@ class SearchActivity : ComponentActivity() {
                     color = Color.Black
                 )
                 CoilImage(
-                    imageRequest = ImageRequest.Builder(LocalContext.current)
-                        .data(user.loginId)
-                        .crossfade(true)
-                        .build(),
-                    modifier = Modifier.size(100.dp),
+                    imageModel = user.avatarUrl,
+                    modifier = Modifier.size(80.dp),
                     contentScale = ContentScale.Crop,
-                    loading = {
-                        Image(
-                            painter = painterResource(R.drawable.ic_round_insert_photo_24),
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(Color.LightGray),
-                            alpha = .5f
-                        )
-                    }
                 )
             }
         }

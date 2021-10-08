@@ -56,7 +56,7 @@ fun SearchableTopAppBar(
         modifier = modifier,
         backgroundColor = backgroundColor,
         elevation = elevation,
-        contentPadding = PaddingValues(horizontal = 16.dp)
+        contentPadding = PaddingValues(start = 16.dp, end = 8.dp)
     ) {
         if (searchingState.value) {
             TextField(
