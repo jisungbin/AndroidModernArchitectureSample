@@ -1,4 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ AndroidModernArchitectureSample © 2021 Ji Sungbin. all rights reserved.
+  ~ AndroidModernArchitectureSample license is under the Apache-2.0.
+  ~
+  ~ [AndroidManifest.xml] created by Ji Sungbin on 21. 10. 8. 오전 11:03
+  ~
+  ~ Please see: https://github.com/jisungbin/AndroidModernArchitectureSample/blob/master/LICENSE
+  -->
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.github.jisungbin.sample">
 
@@ -6,14 +14,13 @@
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:fullBackupOnly="true"
-        android:icon="@drawable/ic_launcher_background"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ComposeTemplate" >
-
+        android:theme="@style/Theme.GithubUsers">
 
         <activity
-            android:name=".SearchActivity"
+            android:name=".activity.SearchActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
