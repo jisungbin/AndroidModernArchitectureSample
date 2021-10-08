@@ -126,6 +126,7 @@ object Dependencies {
         "androidx.compose.compiler:compiler:${Versions.Compose.Master}",
         "androidx.compose.material:material:${Versions.Compose.Master}",
         "androidx.activity:activity-compose:${Versions.Compose.Activity}",
+        "androidx.compose.runtime:runtime-livedata:${Versions.Compose.Master}",
         "androidx.lifecycle:lifecycle-viewmodel-compose:${Versions.Compose.Lifecycle}",
         "com.google.accompanist:accompanist-swiperefresh:${Versions.Compose.SwipeRefresh}",
         "androidx.constraintlayout:constraintlayout-compose:${Versions.Compose.ConstraintLayout}"

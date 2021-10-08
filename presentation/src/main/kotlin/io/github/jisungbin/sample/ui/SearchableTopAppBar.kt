@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.AppBarDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentAlpha
@@ -35,6 +36,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import io.github.jisungbin.sample.R
 
@@ -42,6 +44,7 @@ import io.github.jisungbin.sample.R
 fun SearchableTopAppBar(
     modifier: Modifier = Modifier,
     title: String,
+    elevation: Dp = AppBarDefaults.BottomAppBarElevation,
     searchingState: MutableState<Boolean>,
     searchFieldState: MutableState<TextFieldValue>,
     onSearchDoneClickAction: (TextFieldValue) -> Unit,
@@ -49,7 +52,7 @@ fun SearchableTopAppBar(
     backgroundColor: Color = MaterialTheme.colors.primarySurface,
     iconTint: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
 ) {
-    TopAppBar(modifier = modifier, backgroundColor = backgroundColor) {
+    TopAppBar(modifier = modifier, backgroundColor = backgroundColor, elevation = elevation) {
         if (searchingState.value) {
             TextField(
                 value = searchFieldState.value,

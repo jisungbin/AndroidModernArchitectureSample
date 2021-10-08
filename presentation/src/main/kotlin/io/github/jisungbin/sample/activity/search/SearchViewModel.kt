@@ -12,16 +12,48 @@ package io.github.jisungbin.sample.activity.search
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import io.github.jisungbin.sample.activity.search.mvi.MviUserSearchState
+import io.github.jisungbin.sample.domain.doWhen
+import io.github.jisungbin.sample.domain.usecase.GithubUserSearchUseCase
+import kotlinx.coroutines.flow.collect
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.syntax.simple.intent
+import org.orbitmvi.orbit.syntax.simple.reduce
+import org.orbitmvi.orbit.viewmodel.container
+import javax.inject.Inject
 
-class SearchViewModel : ViewModel() {
+@HiltViewModel
+class SearchViewModel @Inject constructor(
+    private val githubUserSearchUseCase: GithubUserSearchUseCase
+) : ContainerHost<MviUserSearchState, Unit>, ViewModel() {
     private var lastScrollIndex = 0
 
     private val _scrollingUp = MutableLiveData(false)
     val scrollingUp: LiveData<Boolean> get() = _scrollingUp
 
+    override val container = container<MviUserSearchState, Unit>(MviUserSearchState())
+
     fun updateScrollPosition(newScrollIndex: Int) {
         if (newScrollIndex == lastScrollIndex) return
         _scrollingUp.value = newScrollIndex > lastScrollIndex
         lastScrollIndex = newScrollIndex
+    }
+
+    fun search(query: String, page: Int) = intent {
+        githubUserSearchUseCase(query, page).collect { userSearchResult ->
+            userSearchResult.doWhen(
+                onSuccess = { users ->
+                    reduce {
+                        state.copy(loaded = true, users = users)
+                    }
+                },
+                onFail = { exception ->
+                    reduce {
+                        state.copy(loaded = true, exception = exception)
+                    }
+                }
+            )
+        }
     }
 }
