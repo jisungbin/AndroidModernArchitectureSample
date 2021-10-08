@@ -9,6 +9,8 @@
 
 <resources>
     <string name="app_name">Github Users</string>
+
     <string name="activity_search_topappbar_placeholder_input">입력…</string>
     <string name="activity_search_text_empty_display_users">표시할 유저 목록이 비었어요!</string>
+    <string name="activity_search_toast_exception">유저 조회중 오류가 발생했어요 😢\n\n%s</string>
 </resources>

@@ -10,8 +10,10 @@
 package io.github.jisungbin.sample.activity.search
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -40,6 +42,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -55,6 +58,7 @@ import io.github.jisungbin.sample.activity.search.mvi.MviUserSearchState
 import io.github.jisungbin.sample.domain.model.user.GithubUser
 import io.github.jisungbin.sample.theme.MaterialTheme
 import io.github.jisungbin.sample.ui.SearchableTopAppBar
+import io.github.jisungbin.sample.util.extension.toast
 import org.orbitmvi.orbit.viewmodel.observe
 
 @AndroidEntryPoint
@@ -73,6 +77,7 @@ class SearchActivity : ComponentActivity() {
     private fun Screen() {
         val vm: SearchViewModel = viewModel()
         val scrollState = rememberLazyListState()
+        val focusManager = LocalFocusManager.current
 
         val searchingState = remember { mutableStateOf(false) }
         val searchFieldState = remember { mutableStateOf(TextFieldValue()) }
@@ -86,6 +91,7 @@ class SearchActivity : ComponentActivity() {
                 lifecycleOwner = this@SearchActivity,
                 state = { state ->
                     handleState(state = state, updateSearchedUserState = { searchedUsers ->
+                        users.clear()
                         users.addAll(searchedUsers)
                     })
                 }
@@ -106,25 +112,27 @@ class SearchActivity : ComponentActivity() {
                     primaryColor = Color.Black,
                     backgroundColor = Color.White,
                     onSearchDoneClickAction = { searchFieldValue ->
+                        focusManager.clearFocus()
                         vm.search(query = searchFieldValue.text, page = 1) // todo: pagination
-                        println(searchFieldValue)
                     }
                 )
             }
         ) {
-            if (users.isNotEmpty()) {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(16.dp),
-                    state = scrollState,
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    items(users) { user ->
-                        UserChip(user)
+            Crossfade(users.isEmpty()) { isUserEmpty ->
+                if (!isUserEmpty) {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(16.dp),
+                        state = scrollState,
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        items(users) { user ->
+                            UserChip(user)
+                        }
                     }
+                } else {
+                    EmptyUsers()
                 }
-            } else {
-                EmptyUsers()
             }
         }
     }
@@ -161,12 +169,17 @@ class SearchActivity : ComponentActivity() {
         state: MviUserSearchState,
         updateSearchedUserState: (List<GithubUser>) -> Unit
     ) {
-        println(state)
         if (state.loaded) {
             if (!state.isException()) {
                 updateSearchedUserState(state.users)
             } else {
-                println(state.exception!!) // todo: handle exception
+                toast(
+                    message = getString(
+                        R.string.activity_search_toast_exception,
+                        state.exception.toString()
+                    ),
+                    length = Toast.LENGTH_LONG
+                )
             }
         }
     }
