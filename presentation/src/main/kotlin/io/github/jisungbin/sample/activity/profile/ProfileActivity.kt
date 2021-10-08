@@ -11,9 +11,9 @@ package io.github.jisungbin.sample.activity.profile
 
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
-import dagger.hilt.android.HiltAndroidApp
+import dagger.hilt.android.AndroidEntryPoint
 
-@HiltAndroidApp
+@AndroidEntryPoint
 class ProfileActivity : ComponentActivity() {
     private val vm: ProfileViewModel by viewModels()
 }
