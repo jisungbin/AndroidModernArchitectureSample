@@ -35,6 +35,7 @@ object Versions {
     }
 
     object Util {
+        const val Erratum = "1.0.1"
         const val Jackson = "2.12.5"
         const val LeakCanary = "2.7"
         const val CheckDependencyUpdates = "1.5.0"
@@ -125,4 +126,6 @@ object Dependencies {
         "androidx.lifecycle:lifecycle-viewmodel-compose:${Versions.Compose.Lifecycle}",
         "androidx.constraintlayout:constraintlayout-compose:${Versions.Compose.ConstraintLayout}"
     )
+
+    val util = listOf("io.github.jisungbin:erratum:${Versions.Util.Erratum}")
 }

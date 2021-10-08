@@ -69,7 +69,6 @@ android {
 dependencies {
     implementation(Dependencies.mvi)
     implementation(Dependencies.hilt)
-    implementation(Dependencies.leakCanary)
     implementation(Dependencies.LandscapistCoil) {
         exclude(group = "androidx.appcompat", module = "appcompat")
         exclude(group = "androidx.appcompat", module = "appcompat-resources")
@@ -79,6 +78,7 @@ dependencies {
     implementation(project(":domain"))
 
     Dependencies.ui.forEach(::implementation)
+    Dependencies.util.forEach(::implementation)
     Dependencies.jackson.forEach(::implementation)
     Dependencies.compose.forEach(::implementation)
     Dependencies.retrofit.forEach(::implementation)
@@ -86,4 +86,6 @@ dependencies {
     Dependencies.retrofitutil.forEach(::implementation)
 
     kapt(Dependencies.hiltCompiler)
+
+    debugImplementation(Dependencies.leakCanary)
 }
