@@ -10,7 +10,6 @@
 package io.github.jisungbin.sample.activity.search
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.Crossfade
@@ -33,7 +32,6 @@ import androidx.compose.material.Card
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -54,12 +52,9 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.skydoves.landscapist.coil.CoilImage
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jisungbin.sample.R
-import io.github.jisungbin.sample.activity.search.mvi.MviUserSearchState
 import io.github.jisungbin.sample.domain.model.user.GithubUser
 import io.github.jisungbin.sample.theme.MaterialTheme
 import io.github.jisungbin.sample.ui.SearchableTopAppBar
-import io.github.jisungbin.sample.util.extension.toast
-import org.orbitmvi.orbit.viewmodel.observe
 
 @AndroidEntryPoint
 class SearchActivity : ComponentActivity() {
@@ -86,18 +81,6 @@ class SearchActivity : ComponentActivity() {
 
         val users = remember { mutableStateListOf<GithubUser>() }
 
-        LaunchedEffect(vm) {
-            vm.observe(
-                lifecycleOwner = this@SearchActivity,
-                state = { state ->
-                    handleState(state = state, updateSearchedUserState = { searchedUsers ->
-                        users.clear()
-                        users.addAll(searchedUsers)
-                    })
-                }
-            )
-        }
-
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
@@ -113,7 +96,7 @@ class SearchActivity : ComponentActivity() {
                     backgroundColor = Color.White,
                     onSearchDoneClickAction = { searchFieldValue ->
                         focusManager.clearFocus()
-                        vm.search(query = searchFieldValue.text, page = 1) // todo: pagination
+                        vm.searchPagination(searchFieldValue.text)
                     }
                 )
             }
@@ -160,25 +143,6 @@ class SearchActivity : ComponentActivity() {
                     imageModel = user.avatarUrl,
                     modifier = Modifier.size(80.dp),
                     contentScale = ContentScale.Crop,
-                )
-            }
-        }
-    }
-
-    private fun handleState(
-        state: MviUserSearchState,
-        updateSearchedUserState: (List<GithubUser>) -> Unit
-    ) {
-        if (state.loaded) {
-            if (!state.isException()) {
-                updateSearchedUserState(state.users)
-            } else {
-                toast(
-                    message = getString(
-                        R.string.activity_search_toast_exception,
-                        state.exception.toString()
-                    ),
-                    length = Toast.LENGTH_LONG
                 )
             }
         }

@@ -10,37 +10,32 @@
 package io.github.jisungbin.sample.activity.search
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.jisungbin.sample.activity.search.mvi.MviUserSearchState
-import io.github.jisungbin.sample.domain.doWhen
+import io.github.jisungbin.sample.activity.search.paging.UserSearchPagingSource
+import io.github.jisungbin.sample.domain.model.user.GithubUser
 import io.github.jisungbin.sample.domain.usecase.GithubUserSearchUseCase
-import kotlinx.coroutines.flow.collect
-import org.orbitmvi.orbit.ContainerHost
-import org.orbitmvi.orbit.syntax.simple.intent
-import org.orbitmvi.orbit.syntax.simple.reduce
-import org.orbitmvi.orbit.viewmodel.container
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val githubUserSearchUseCase: GithubUserSearchUseCase
-) : ContainerHost<MviUserSearchState, Unit>, ViewModel() {
-    override val container = container<MviUserSearchState, Unit>(MviUserSearchState())
+) : ViewModel() {
+    private val defaultPageSize = 30
 
-    fun search(query: String, page: Int) = intent {
-        githubUserSearchUseCase(query, page).collect { userSearchResult ->
-            userSearchResult.doWhen(
-                onSuccess = { users ->
-                    reduce {
-                        state.copy(loaded = true, users = users)
-                    }
-                },
-                onFail = { exception ->
-                    reduce {
-                        state.copy(loaded = true, exception = exception)
-                    }
-                }
-            )
-        }
+    fun searchPagination(query: String): Flow<PagingData<GithubUser>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = defaultPageSize,
+                enablePlaceholders = false,
+                maxSize = 100
+            ),
+            pagingSourceFactory = { UserSearchPagingSource(githubUserSearchUseCase, query) }
+        ).flow.cachedIn(viewModelScope)
     }
 }

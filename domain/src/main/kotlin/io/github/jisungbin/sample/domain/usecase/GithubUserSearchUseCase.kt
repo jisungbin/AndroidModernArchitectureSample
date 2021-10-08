@@ -9,10 +9,8 @@
 
 package io.github.jisungbin.sample.domain.usecase
 
-import androidx.annotation.IntRange
 import io.github.jisungbin.sample.domain.repo.GithubUserRepo
 
 class GithubUserSearchUseCase(private val repo: GithubUserRepo) {
-    suspend operator fun invoke(query: String, @IntRange(from = 1) page: Int) =
-        repo.search(query, page)
+    suspend operator fun invoke(query: String, page: Int) = repo.search(query, page)
 }

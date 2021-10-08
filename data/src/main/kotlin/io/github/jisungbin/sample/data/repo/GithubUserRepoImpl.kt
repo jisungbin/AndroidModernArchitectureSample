@@ -10,6 +10,7 @@
 package io.github.jisungbin.sample.data.repo
 
 import android.content.Context
+import androidx.annotation.IntRange
 import io.github.jisungbin.sample.data.api.GithubUserApi
 import io.github.jisungbin.sample.data.local.GithubUserDatabase
 import io.github.jisungbin.sample.data.mapper.toDomain
@@ -23,14 +24,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.callbackFlow
 import retrofit2.Retrofit
 
-class GithubUserRepoImpl(private val context: Context, retrofit: Retrofit) :
-    GithubUserRepo {
+class GithubUserRepoImpl(private val context: Context, retrofit: Retrofit) : GithubUserRepo {
     private val db = GithubUserDatabase.build(context)
     private val api = retrofit.create(GithubUserApi::class.java)
     private val networkAvailable get() = NetworkUtil.isNetworkAvailable(context)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override suspend fun search(query: String, page: Int) = callbackFlow {
+    override suspend fun search(query: String, @IntRange(from = 1) page: Int) = callbackFlow {
         try {
             if (networkAvailable) {
                 val request = api.search(query, page)
