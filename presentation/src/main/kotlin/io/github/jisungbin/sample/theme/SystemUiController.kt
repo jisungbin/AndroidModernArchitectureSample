@@ -1,4 +1,4 @@
-package io.github.jisungbin.gitmessengerbot.theme
+package io.github.jisungbin.sample.theme
 
 import android.os.Build
 import android.view.View

@@ -21,9 +21,9 @@ import io.github.jisungbin.sample.R
 val defaultFontFamily = FontFamily(Font(R.font.nanumbarungothic))
 
 val colors = lightColors().copy(
-    primary = Color(0xFF6b1aa5),
-    primaryVariant = Color(0xFF380075),
-    secondary = Color(0xFF9e4dd7)
+    primary = Color(0xFFffffff),
+    primaryVariant = Color(0xFFcccccc),
+    secondary = Color(0xFFffffff)
 )
 
 private val typography = Typography(defaultFontFamily = defaultFontFamily)
