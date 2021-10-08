@@ -1,0 +1,8 @@
+.gradle
+local.properties
+/.idea
+/build
+/app/build
+/app/release
+/buildSrc/.gradle/
+/buildSrc/build/
