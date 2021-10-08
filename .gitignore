@@ -2,7 +2,9 @@
 local.properties
 /.idea
 /build
-/app/build
-/app/release
+/data/build
+/domain/build
+/presentation/build
+/presentation/release
 /buildSrc/.gradle/
 /buildSrc/build/
