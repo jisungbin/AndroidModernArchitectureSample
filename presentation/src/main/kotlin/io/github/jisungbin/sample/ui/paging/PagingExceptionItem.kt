@@ -52,7 +52,7 @@ fun <T : Any> PagingExceptionItem(
             onClick = { paginationItems.retry() }
         ) {
             Text(
-                text = stringResource(R.string.ui_paging_exception_item_message),
+                text = stringResource(R.string.ui_paging_exception_item_button_retry),
                 color = Color.Gray
             )
         }

@@ -34,10 +34,13 @@ class ProfileViewModel @Inject constructor(
     private val defaultPageSize = 30
     private val defaultMaxSize = 100
 
+    private val repositoriesPage = 1
+    private val repositoriesPerPage = 3
+
     override val container = container<MviProfileState, Unit>(MviProfileState())
 
     fun getUserInformation(loginId: String) = intent {
-        githubUserInformationUseCase(loginId).collect { userInformationResult ->
+        githubUserInformationUseCase(loginId = loginId).collect { userInformationResult ->
             userInformationResult.doWhen(
                 onSuccess = { userInformation ->
                     reduce {
@@ -59,7 +62,11 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun getUserRepositories(loginId: String) = intent {
-        githubUserRepositoriesUseCase(loginId).collect { userRepositoriesResult ->
+        githubUserRepositoriesUseCase(
+            loginId = loginId,
+            page = repositoriesPage,
+            perPage = repositoriesPerPage
+        ).collect { userRepositoriesResult ->
             userRepositoriesResult.doWhen(
                 onSuccess = { userRepositories ->
                     reduce {

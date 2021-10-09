@@ -21,7 +21,7 @@ class GithubUserEventsPaginationUseCase(private val repo: GithubUserRepo) {
     ) = repo.getEventsPagination(
         scope = scope,
         loginId = loginId,
-        perPage = perPage,
-        maxSize = maxSize
+        page = perPage,
+        perPage = maxSize
     )
 }

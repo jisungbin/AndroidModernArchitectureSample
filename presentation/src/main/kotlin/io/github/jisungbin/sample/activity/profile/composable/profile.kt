@@ -10,8 +10,10 @@
 package io.github.jisungbin.sample.activity.profile.composable
 
 import android.content.Context
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -48,12 +50,14 @@ import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.skydoves.landscapist.coil.CoilImage
 import io.github.jisungbin.sample.R
+import io.github.jisungbin.sample.activity.profile.ImageViewActivity
 import io.github.jisungbin.sample.activity.profile.ProfileViewModel
 import io.github.jisungbin.sample.activity.profile.mvi.MviProfileState
 import io.github.jisungbin.sample.domain.model.event.GithubUserEventItem
 import io.github.jisungbin.sample.domain.model.information.GithubUserInformation
 import io.github.jisungbin.sample.domain.model.repository.GithubUserRepositories
 import io.github.jisungbin.sample.ui.paging.PagingRefreshItem
+import io.github.jisungbin.sample.util.constant.IntentConstant
 import io.github.jisungbin.sample.util.extension.toast
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -132,13 +136,15 @@ fun Profile(loginId: String) {
 
 @Composable
 private fun Header(user: GithubUserInformation?) {
+    val context = LocalContext.current
+
     Crossfade(user != null) { isUserLoaded ->
         if (isUserLoaded) {
             ConstraintLayout(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
-                    .padding(15.dp),
+                    .padding(16.dp),
             ) {
                 val (profileContainer, avatar) = createRefs()
 
@@ -160,15 +166,16 @@ private fun Header(user: GithubUserInformation?) {
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         color = Color.Black,
-                        fontSize = 25.sp
+                        fontSize = 20.sp
                     )
                     Text(
-                        modifier = Modifier.padding(top = 8.dp),
+                        modifier = Modifier.padding(top = 4.dp),
                         text = user.bio,
                         maxLines = 3,
                         overflow = TextOverflow.Ellipsis,
                         color = Color.Gray,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        fontSize = 13.sp
                     )
                 }
                 CoilImage(
@@ -179,6 +186,15 @@ private fun Header(user: GithubUserInformation?) {
                             end.linkTo(parent.end)
                             top.linkTo(parent.top)
                             bottom.linkTo(parent.bottom)
+                        }
+                        .clickable {
+                            val imageViewActivityIntent =
+                                Intent(context, ImageViewActivity::class.java)
+                            imageViewActivityIntent.putExtra(
+                                IntentConstant.ImageUrl,
+                                user!!.avatarUrl
+                            )
+                            context.startActivity(imageViewActivityIntent)
                         },
                     imageModel = user!!.avatarUrl,
                     contentScale = ContentScale.Crop,

@@ -19,6 +19,6 @@
 
     <string name="ui_search_topappbar_placeholder_input">Search…</string>
 
-    <string name="ui_paging_exception_item_button">Retry load</string>
+    <string name="ui_paging_exception_item_button_retry">Retry load</string>
     <string name="ui_paging_exception_item_message">An error occurred while retrieving information 😢\n\n%s</string>
 </resources>

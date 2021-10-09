@@ -77,13 +77,13 @@ class GithubUserRepoImpl(private val context: Context, retrofit: Retrofit) : Git
     override suspend fun searchPagination(
         scope: CoroutineScope,
         query: String,
-        @IntRange(from = 1, to = 101) perPage: Int,
-        @IntRange(from = 100, to = 501) maxSize: Int
+        @IntRange(from = 1, to = 101) page: Int,
+        @IntRange(from = 100, to = 501) perPage: Int
     ) = Pager(
         config = PagingConfig(
-            pageSize = perPage,
+            pageSize = page,
             enablePlaceholders = false,
-            maxSize = maxSize
+            maxSize = perPage
         ),
         pagingSourceFactory = { UserSearchPagingSource(this, query) }
     ).flow.cachedIn(scope = scope)
@@ -91,8 +91,8 @@ class GithubUserRepoImpl(private val context: Context, retrofit: Retrofit) : Git
     @OptIn(ExperimentalCoroutinesApi::class)
     override suspend fun getEvents(
         loginId: String,
-        page: Int,
-        perPage: Int
+        @IntRange(from = 1) page: Int,
+        @IntRange(from = 1, to = 101) perPage: Int
     ) = callbackFlow {
         try {
             if (networkAvailable) {
@@ -122,13 +122,13 @@ class GithubUserRepoImpl(private val context: Context, retrofit: Retrofit) : Git
     override suspend fun getEventsPagination(
         scope: CoroutineScope,
         loginId: String,
-        @IntRange(from = 1, to = 101) perPage: Int,
-        @IntRange(from = 100, to = 501) maxSize: Int
+        @IntRange(from = 1, to = 101) page: Int,
+        @IntRange(from = 100, to = 501) perPage: Int
     ) = Pager(
         config = PagingConfig(
-            pageSize = perPage,
+            pageSize = page,
             enablePlaceholders = false,
-            maxSize = maxSize
+            maxSize = perPage
         ),
         pagingSourceFactory = { UserEventsPagingSource(repo = this, loginId = loginId) }
     ).flow.cachedIn(scope = scope)
@@ -161,10 +161,18 @@ class GithubUserRepoImpl(private val context: Context, retrofit: Retrofit) : Git
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override suspend fun getRepositories(loginId: String) = callbackFlow {
+    override suspend fun getRepositories(
+        loginId: String,
+        @IntRange(from = 1) page: Int,
+        @IntRange(from = 1, to = 101) perPage: Int
+    ) = callbackFlow {
         try {
             if (networkAvailable) {
-                val request = api.getRepositories(loginId = loginId)
+                val request = api.getRepositories(
+                    loginId = loginId,
+                    page = page,
+                    perPage = perPage,
+                )
                 trySend(
                     if (request.isValid()) {
                         saveUserRepositoriesToDatabase(request.body()!!.toEntity())

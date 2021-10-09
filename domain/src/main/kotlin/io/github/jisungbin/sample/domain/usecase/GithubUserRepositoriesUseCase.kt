@@ -12,5 +12,9 @@ package io.github.jisungbin.sample.domain.usecase
 import io.github.jisungbin.sample.domain.repo.GithubUserRepo
 
 class GithubUserRepositoriesUseCase(private val repo: GithubUserRepo) {
-    suspend operator fun invoke(loginId: String) = repo.getRepositories(loginId = loginId)
+    suspend operator fun invoke(
+        loginId: String,
+        page: Int,
+        perPage: Int
+    ) = repo.getRepositories(loginId = loginId, page = page, perPage = perPage)
 }

@@ -17,7 +17,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -99,7 +99,7 @@ private fun EventChip(event: GithubUserEventItem) {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
-            .height(80.dp)
+            .heightIn(min = 60.dp, max = 100.dp)
     ) {
         val (avatar, loginId, type, createdAt, repository) = createRefs()
 
@@ -150,6 +150,7 @@ private fun EventChip(event: GithubUserEventItem) {
                 top.linkTo(avatar.bottom)
                 bottom.linkTo(parent.bottom)
                 width = Dimension.fillToConstraints
+                height = Dimension.wrapContent
             },
             repoPatch = event.repoPatch
         )

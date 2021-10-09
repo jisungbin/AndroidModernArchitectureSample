@@ -41,8 +41,8 @@ interface GithubUserApi {
     @GET("/users/{userId}/repos")
     suspend fun getRepositories(
         @Path("userId") loginId: String,
-        @Query("page") page: Int = 1,
-        @Query("per_page") perPage: Int = 3,
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int,
         @Query("sort") sort: String = "updated",
     ): Response<List<GithubUserRepositoryItem>>
 }

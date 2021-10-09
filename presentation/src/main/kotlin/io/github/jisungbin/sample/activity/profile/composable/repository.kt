@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -57,7 +56,7 @@ fun Repositories(repositories: GithubUserRepositories?) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentWidth(),
-                    contentPadding = PaddingValues(16.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     items(items = repositoriesItem) { repository ->
@@ -84,7 +83,6 @@ private fun RepositoryItem(repository: GithubUserRepositoryItem) {
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
                 .clickable {
                     Web.open(context = context, address = address)
                 }
@@ -106,7 +104,6 @@ private fun RepositoryItem(repository: GithubUserRepositoryItem) {
                 overflow = TextOverflow.Ellipsis
             )
             Row(
-                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
