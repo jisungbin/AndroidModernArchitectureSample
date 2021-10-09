@@ -11,5 +11,5 @@ package io.github.jisungbin.sample.util.constant
 
 object IntentConstant {
     const val ImageUrl = "intent-image-url"
-    const val GithubUserId = "github-user-id"
+    const val GithubUserLoginId = "intent-github-user-login-id"
 }

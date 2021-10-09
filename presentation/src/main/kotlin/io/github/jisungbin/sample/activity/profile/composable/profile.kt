@@ -11,8 +11,10 @@ package io.github.jisungbin.sample.activity.profile.composable
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -49,6 +51,7 @@ import io.github.jisungbin.sample.activity.profile.mvi.MviProfileState
 import io.github.jisungbin.sample.domain.model.event.GithubUserEventItem
 import io.github.jisungbin.sample.domain.model.information.GithubUserInformation
 import io.github.jisungbin.sample.domain.model.repository.GithubUserRepositories
+import io.github.jisungbin.sample.ui.paging.PagingRefreshItem
 import io.github.jisungbin.sample.util.extension.toast
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -114,56 +117,70 @@ fun Profile(loginId: String) {
             )
         }
     ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Header(user = userInformation)
+            Repositories(repositories = userRepositories)
+            Events(eventsPagingDataFlow = userEventsPagingData)
+        }
     }
 }
 
 @Composable
-private fun Header(user: GithubUserInformation) {
-    ConstraintLayout(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(15.dp),
-    ) {
-        val (profileContainer, avatar) = createRefs()
+private fun Header(user: GithubUserInformation?) {
+    Crossfade(user != null) { isUserLoaded ->
+        if (isUserLoaded) {
+            ConstraintLayout(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(15.dp),
+            ) {
+                val (profileContainer, avatar) = createRefs()
 
-        Column(
-            modifier = Modifier
-                .wrapContentSize()
-                .constrainAs(profileContainer) {
-                    start.linkTo(parent.start)
-                    end.linkTo(avatar.start, 8.dp)
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                },
-            verticalArrangement = Arrangement.SpaceAround,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = user.loginId,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                color = Color.Black
-            )
-            Text(
-                text = user.bio,
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis,
-                color = Color.Gray
-            )
+                Column(
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .constrainAs(profileContainer) {
+                            start.linkTo(parent.start)
+                            end.linkTo(avatar.start, 8.dp)
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                        },
+                    verticalArrangement = Arrangement.SpaceAround,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = user!!.loginId,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = Color.Black
+                    )
+                    Text(
+                        text = user.bio,
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis,
+                        color = Color.Gray
+                    )
+                }
+                CoilImage(
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(RoundedCornerShape(5.dp))
+                        .constrainAs(avatar) {
+                            end.linkTo(parent.end)
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                        },
+                    imageModel = user!!.avatarUrl,
+                    contentScale = ContentScale.Crop,
+                )
+            }
+        } else {
+            PagingRefreshItem(modifier = Modifier.fillMaxSize(), lottieRes = R.raw.loading_profile)
         }
-        CoilImage(
-            modifier = Modifier
-                .size(100.dp)
-                .clip(RoundedCornerShape(5.dp))
-                .constrainAs(avatar) {
-                    end.linkTo(parent.end)
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                },
-            imageModel = user.avatarUrl,
-            contentScale = ContentScale.Crop,
-        )
     }
 }
 

@@ -24,7 +24,7 @@ class ProfileActivity : ComponentActivity() {
 
         setContent {
             MaterialTheme {
-                Profile(loginId = intent.getStringExtra(IntentConstant.GithubUserId)!!)
+                Profile(loginId = intent.getStringExtra(IntentConstant.GithubUserLoginId)!!)
             }
         }
     }

@@ -10,6 +10,9 @@
 package io.github.jisungbin.sample.activity.profile.composable
 
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.jisungbin.sample.R
@@ -38,23 +42,29 @@ import io.github.jisungbin.sample.domain.model.repository.GithubUserRepositories
 import io.github.jisungbin.sample.domain.model.repository.GithubUserRepositoryItem
 import io.github.jisungbin.sample.util.Web
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun Repositories(_repositories: GithubUserRepositories) {
-    val repositories = _repositories.items
+fun Repositories(repositories: GithubUserRepositories?) {
+    AnimatedVisibility(repositories != null) {
+        val repositoriesItem = repositories!!.items
 
-    if (repositories.isNotEmpty()) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentWidth(),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            items(items = repositories) { repository ->
-                RepositoryItem(repository = repository)
+        Crossfade(repositoriesItem.isNotEmpty()) { repositoriesNotEmpty ->
+            if (repositoriesNotEmpty) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentWidth(),
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(items = repositoriesItem) { repository ->
+                        RepositoryItem(repository = repository)
+                    }
+                }
+            } else {
+                LoadingOrEmptyItem(stringResource(R.string.activity_profile_composable_empty_repository))
             }
         }
-    } else {
     }
 }
 
