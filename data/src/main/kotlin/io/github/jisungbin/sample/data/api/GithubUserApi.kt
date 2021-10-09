@@ -26,23 +26,23 @@ interface GithubUserApi {
         @Query("per_page") perPage: Int
     ): Response<GithubUsersResponse>
 
+    @GET("/users/{userId}/events")
+    suspend fun getEvents(
+        @Path("userId") loginId: String,
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int,
+    ): Response<List<GithubUserEventItem>>
+
     @GET("/users/{userId}")
     suspend fun getInformation(
-        @Path("userId") userId: String
+        @Path("userId") loginId: String
     ): Response<GithubUserInformationResponse>
 
     @GET("/users/{userId}/repos")
     suspend fun getRepositories(
-        @Path("userId") userId: String,
+        @Path("userId") loginId: String,
         @Query("page") page: Int = 3,
         @Query("per_page") perPage: Int = 1,
         @Query("sort") sort: String = "updated",
     ): Response<List<GithubUserRepositoryItem>>
-
-    @GET("/users/{userId}/events")
-    suspend fun getEvents(
-        @Path("userId") userId: String,
-        @Query("page") page: Int,
-        @Query("per_page") perPage: Int,
-    ): Response<List<GithubUserEventItem>>
 }

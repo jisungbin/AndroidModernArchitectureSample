@@ -28,20 +28,20 @@ interface GithubUserRepo {
         maxSize: Int
     ): Flow<PagingData<GithubUser>>
 
-    suspend fun getInformation(userId: String): Flow<GithubResult<GithubUserInformation>>
-
-    suspend fun getRepositories(userId: String): Flow<GithubResult<GithubUserRepositories>>
-
     suspend fun getEvents(
-        userId: String,
+        loginId: String,
         page: Int,
         perPage: Int
     ): Flow<GithubResult<GithubUserEvents>>
 
     suspend fun getEventsPagination(
         scope: CoroutineScope,
-        userId: String,
+        loginId: String,
         page: Int,
         perPage: Int
     ): Flow<PagingData<GithubUserEvents>>
+
+    suspend fun getInformation(loginId: String): Flow<GithubResult<GithubUserInformation>>
+
+    suspend fun getRepositories(loginId: String): Flow<GithubResult<GithubUserRepositories>>
 }

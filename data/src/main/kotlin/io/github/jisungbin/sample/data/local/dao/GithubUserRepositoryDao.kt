@@ -20,6 +20,6 @@ internal interface GithubUserRepositoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(githubUserRepositories: List<GithubUserRepositoryEntity>)
 
-    @Query("SELECT * FROM GithubUserRepositoryEntity WHERE ownerLoginId LIKE :ownerLoginId")
+    @Query("SELECT * FROM GithubUserRepositoryEntity WHERE loginId LIKE :ownerLoginId")
     suspend fun loadAllFromOwnerLoginId(ownerLoginId: String): List<GithubUserRepositoryEntity>
 }
