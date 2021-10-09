@@ -7,17 +7,17 @@
  * Please see: https://github.com/jisungbin/AndroidModernArchitectureSample/blob/master/LICENSE
  */
 
-package io.github.jisungbin.sample.data.model.search
+package io.github.jisungbin.sample.data.model.user
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class GithubSearchResponse(
+data class GithubUsersResponse(
     @field:JsonProperty("total_count")
-    val totalCount: Int,
+    val totalCount: Int? = null,
 
     @field:JsonProperty("incomplete_results")
-    val incompleteResults: Boolean,
+    val incompleteResults: Boolean? = null,
 
     @field:JsonProperty("items")
-    val items: List<UserItem>
+    val items: List<UserItem>? = null
 )

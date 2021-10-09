@@ -9,9 +9,12 @@
 
 package io.github.jisungbin.sample.data.api
 
-import io.github.jisungbin.sample.data.model.search.GithubSearchResponse
+import io.github.jisungbin.sample.data.model.infomation.GithubUserInformationResponse
+import io.github.jisungbin.sample.data.model.repository.GithubUserRepositoryItem
+import io.github.jisungbin.sample.data.model.user.GithubUsersResponse
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface GithubUserApi {
@@ -20,10 +23,19 @@ interface GithubUserApi {
         @Query("q") query: String,
         @Query("page") page: Int,
         @Query("per_page") perPage: Int
-    ): Response<GithubSearchResponse>
+    ): Response<GithubUsersResponse>
 
-    /*@GET("/search/users")
+    @GET("/users/{userId}/repos")
+    suspend fun getRepositories(
+        @Path("userId") userId: String,
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int,
+        @Query("sort") sort: String,
+        @Query("direction") direction: String
+    ): Response<List<GithubUserRepositoryItem>>
+
+    @GET("/users/{userId}")
     suspend fun getInformation(
-        @Query("userId") query: String,
-    ): Response<GithubUserInformationResponse>*/
+        @Path("userId") userId: String,
+    ): Response<GithubUserInformationResponse>
 }

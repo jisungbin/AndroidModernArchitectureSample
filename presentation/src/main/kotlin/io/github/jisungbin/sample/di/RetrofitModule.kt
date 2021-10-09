@@ -28,11 +28,10 @@ import retrofit2.converter.jackson.JacksonConverterFactory
 object RetrofitModule {
     private const val BaseUrl = "https://api.github.com"
 
-    private val mapper by lazy {
-        ObjectMapper()
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            .registerKotlinModule()
-    }
+    private val mapper = ObjectMapper()
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
+        .registerKotlinModule()
 
     private fun getInterceptor(vararg interceptors: Interceptor): OkHttpClient {
         val builder = OkHttpClient.Builder()

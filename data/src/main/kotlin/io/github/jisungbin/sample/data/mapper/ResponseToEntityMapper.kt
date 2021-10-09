@@ -10,12 +10,14 @@
 package io.github.jisungbin.sample.data.mapper
 
 import io.github.jisungbin.sample.data.local.entity.GithubUserEntity
-import io.github.jisungbin.sample.data.model.search.GithubSearchResponse
+import io.github.jisungbin.sample.data.model.user.GithubUsersResponse
 
-internal fun GithubSearchResponse.toEntity(searchKeyword: String) = items.map { user ->
-    GithubUserEntity(
-        loginId = user.loginId,
-        avatarUrl = user.avatarUrl,
-        searchKeyword = searchKeyword
-    )
+internal fun GithubUsersResponse.toEntity(searchKeyword: String): List<GithubUserEntity> {
+    return items?.map { user ->
+        GithubUserEntity(
+            loginId = user.loginId ?: "null",
+            avatarUrl = user.avatarUrl ?: "",
+            searchKeyword = searchKeyword
+        )
+    } ?: emptyList()
 }

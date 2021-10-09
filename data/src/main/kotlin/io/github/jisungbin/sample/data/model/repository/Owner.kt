@@ -2,70 +2,67 @@
  * AndroidModernArchitectureSample © 2021 Ji Sungbin. all rights reserved.
  * AndroidModernArchitectureSample license is under the Apache-2.0.
  *
- * [ItemsItem.kt] created by Ji Sungbin on 21. 10. 8. 오후 3:58
+ * [Owner.kt] created by Ji Sungbin on 21. 10. 9. 오후 3:28
  *
  * Please see: https://github.com/jisungbin/AndroidModernArchitectureSample/blob/master/LICENSE
  */
 
-package io.github.jisungbin.sample.data.model.search
+package io.github.jisungbin.sample.data.model.repository
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class UserItem(
+data class Owner(
     @field:JsonProperty("gists_url")
-    val gistsUrl: String,
+    val gistsUrl: String? = null,
 
     @field:JsonProperty("repos_url")
-    val reposUrl: String,
+    val reposUrl: String? = null,
 
     @field:JsonProperty("following_url")
-    val followingUrl: String,
+    val followingUrl: String? = null,
 
     @field:JsonProperty("starred_url")
-    val starredUrl: String,
+    val starredUrl: String? = null,
 
     @field:JsonProperty("login")
-    val loginId: String,
+    val login: String? = null,
 
     @field:JsonProperty("followers_url")
-    val followersUrl: String,
+    val followersUrl: String? = null,
 
     @field:JsonProperty("type")
-    val type: String,
+    val type: String? = null,
 
     @field:JsonProperty("url")
-    val url: String,
+    val url: String? = null,
 
     @field:JsonProperty("subscriptions_url")
-    val subscriptionsUrl: String,
-
-    @field:JsonProperty("score")
-    val score: Double,
+    val subscriptionsUrl: String? = null,
 
     @field:JsonProperty("received_events_url")
-    val receivedEventsUrl: String,
+    val receivedEventsUrl: String? = null,
 
     @field:JsonProperty("avatar_url")
-    val avatarUrl: String,
+    val avatarUrl: String? = null,
 
     @field:JsonProperty("events_url")
-    val eventsUrl: String,
+    val eventsUrl: String? = null,
 
     @field:JsonProperty("html_url")
-    val htmlUrl: String,
+    val htmlUrl: String? = null,
 
     @field:JsonProperty("site_admin")
-    val siteAdmin: Boolean,
+    val siteAdmin: Boolean? = null,
 
     @field:JsonProperty("id")
-    val id: Int,
+    val id: Int? = null,
 
     @field:JsonProperty("gravatar_id")
-    val gravatarId: String,
+    val gravatarId: String? = null,
 
     @field:JsonProperty("node_id")
-    val nodeId: String,
+    val nodeId: String? = null,
 
     @field:JsonProperty("organizations_url")
-    val organizationsUrl: String
+    val organizationsUrl: String? = null
 )

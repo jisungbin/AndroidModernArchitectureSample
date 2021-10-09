@@ -9,8 +9,11 @@
 
 package io.github.jisungbin.sample.data.mapper
 
-import io.github.jisungbin.sample.data.model.search.GithubSearchResponse
+import io.github.jisungbin.sample.data.model.user.GithubUsersResponse
 import io.github.jisungbin.sample.domain.model.user.GithubUser
 
-internal fun GithubSearchResponse.toDomain() =
-    items.map { user -> GithubUser(loginId = user.loginId, avatarUrl = user.avatarUrl) }
+internal fun GithubUsersResponse.toDomain(): List<GithubUser> {
+    return items?.map { user ->
+        GithubUser(loginId = user.loginId ?: "null", avatarUrl = user.avatarUrl ?: "")
+    } ?: emptyList()
+}
