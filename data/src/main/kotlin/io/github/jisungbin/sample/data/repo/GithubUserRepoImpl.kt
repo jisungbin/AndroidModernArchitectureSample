@@ -13,6 +13,7 @@ import android.content.Context
 import androidx.annotation.IntRange
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import io.github.jisungbin.sample.data.api.GithubUserApi
 import io.github.jisungbin.sample.data.local.GithubUserDatabase
@@ -24,10 +25,14 @@ import io.github.jisungbin.sample.data.util.NetworkUtil
 import io.github.jisungbin.sample.data.util.isValid
 import io.github.jisungbin.sample.data.util.toFailResult
 import io.github.jisungbin.sample.domain.GithubResult
+import io.github.jisungbin.sample.domain.model.event.GithubUserEvents
+import io.github.jisungbin.sample.domain.model.information.GithubUserInformation
+import io.github.jisungbin.sample.domain.model.repository.GithubUserRepositories
 import io.github.jisungbin.sample.domain.repo.GithubUserRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import retrofit2.Retrofit
 
@@ -55,7 +60,7 @@ class GithubUserRepoImpl(private val context: Context, retrofit: Retrofit) : Git
                     }
                 )
             } else {
-                trySend(GithubResult.Success(db.dao.getUsers(query).toDomain()))
+                trySend(GithubResult.Success(db.userDao.loadFromSearchKeyword(query).toDomain()))
             }
         } catch (exception: Exception) {
             trySend(GithubResult.Fail(exception))
@@ -65,8 +70,8 @@ class GithubUserRepoImpl(private val context: Context, retrofit: Retrofit) : Git
     }
 
     override suspend fun searchPagination(
-        query: String,
         scope: CoroutineScope,
+        query: String,
         @IntRange(from = 1, to = 101) perPage: Int,
         @IntRange(from = 100, to = 501) maxSize: Int
     ) = Pager(
@@ -78,10 +83,52 @@ class GithubUserRepoImpl(private val context: Context, retrofit: Retrofit) : Git
         pagingSourceFactory = { UserSearchPagingSource(this, query) }
     ).flow.cachedIn(scope)
 
+    override suspend fun getInformation(userId: String): Flow<GithubResult<GithubUserInformation>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getRepositories(
+        userId: String,
+        page: Int,
+        perPage: Int,
+        sort: String,
+        direction: String
+    ): Flow<GithubResult<GithubUserRepositories>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getRepositoriesPagination(
+        scope: CoroutineScope,
+        userId: String,
+        page: Int,
+        perPage: Int,
+        sort: String,
+        direction: String
+    ): Flow<PagingData<GithubUserRepositories>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getEvents(
+        userId: String,
+        page: Int,
+        perPage: Int
+    ): Flow<GithubResult<GithubUserEvents>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getEventsPagination(
+        scope: CoroutineScope,
+        userId: String,
+        page: Int,
+        perPage: Int
+    ): Flow<PagingData<GithubUserEvents>> {
+        TODO("Not yet implemented")
+    }
+
     private suspend fun saveToDatabase(users: List<GithubUserEntity>) = coroutineScope {
         if (users.isNotEmpty() && !addedUsers.any { addedUser -> addedUser.loginId == users.first().loginId }) {
             addedUsers.addAll(users)
-            db.dao.insertUsers(users)
+            db.userDao.insertAll(users)
         }
     }
 }

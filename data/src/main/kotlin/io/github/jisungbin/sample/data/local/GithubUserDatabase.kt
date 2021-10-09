@@ -13,14 +13,31 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import io.github.jisungbin.sample.data.local.dao.GithubUserDao
+import io.github.jisungbin.sample.data.local.dao.GithubUserEventDao
+import io.github.jisungbin.sample.data.local.dao.GithubUserInformationDao
+import io.github.jisungbin.sample.data.local.dao.GithubUserRepositoryDao
 import io.github.jisungbin.sample.data.local.entity.GithubUserEntity
+import io.github.jisungbin.sample.data.local.entity.GithubUserEventEntity
 import io.github.jisungbin.sample.data.local.entity.GithubUserInformationEntity
+import io.github.jisungbin.sample.data.local.entity.GithubUserRepositoryEntity
 
-@Database(version = 1, entities = [GithubUserEntity::class, GithubUserInformationEntity::class])
+@Database(
+    version = 2,
+    entities = [
+        GithubUserEntity::class,
+        GithubUserEventEntity::class,
+        GithubUserInformationEntity::class,
+        GithubUserRepositoryEntity::class
+    ]
+)
 internal abstract class GithubUserDatabase : RoomDatabase() {
-    abstract val dao: GithubUserDao
+    abstract val userDao: GithubUserDao
+    abstract val userEventDao: GithubUserEventDao
+    abstract val userInformationDao: GithubUserInformationDao
+    abstract val userRepositoryDao: GithubUserRepositoryDao
 
-    companion object {
+    internal companion object {
         fun build(context: Context) = synchronized(GithubUserDatabase::class.java) {
             Room.databaseBuilder(context, GithubUserDatabase::class.java, "github-user.db")
                 .fallbackToDestructiveMigration()
