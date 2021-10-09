@@ -20,10 +20,11 @@ import io.github.jisungbin.sample.R
 
 val defaultFontFamily = FontFamily(Font(R.font.nanumbarungothic))
 
+// 100% white theme! ❤️
 val colors = lightColors().copy(
-    primary = Color(0xFFffffff),
-    primaryVariant = Color(0xFFcccccc),
-    secondary = Color(0xFFffffff)
+    primary = Color.White,
+    primaryVariant = Color.White,
+    secondary = Color.White
 )
 
 private val typography = Typography(defaultFontFamily = defaultFontFamily)

@@ -58,12 +58,16 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.skydoves.landscapist.coil.CoilImage
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jisungbin.sample.R
 import io.github.jisungbin.sample.domain.model.user.GithubUser
 import io.github.jisungbin.sample.theme.MaterialTheme
 import io.github.jisungbin.sample.ui.SearchableTopAppBar
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
@@ -91,6 +95,7 @@ class SearchActivity : ComponentActivity() {
         val searchTopAppBarShadow =
             animateDpAsState(if (scrollState.firstVisibleItemIndex != 0) AppBarDefaults.BottomAppBarElevation else 0.dp)
 
+        val swipeRefreshState = rememberSwipeRefreshState(false)
         var userPaginationFlow by remember { mutableStateOf<Flow<PagingData<GithubUser>>?>(null) }
 
         Scaffold(
@@ -115,49 +120,69 @@ class SearchActivity : ComponentActivity() {
                 )
             }
         ) {
-            Crossfade(userPaginationFlow != null) { isUserSearched ->
+            Crossfade(userPaginationFlow != null) { isUserSearched -> // TODO: code clean up
                 if (isUserSearched) {
                     val users = userPaginationFlow!!.collectAsLazyPagingItems()
-                    if (users.itemCount > 0) {
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(16.dp),
-                            state = scrollState,
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-                            items(items = users) { user ->
-                                UserChip(user!!)
+                    SwipeRefresh(
+                        state = swipeRefreshState,
+                        onRefresh = {
+                            coroutineScope.launch {
+                                swipeRefreshState.isRefreshing = true
+                                users.refresh()
+                                delay(1000)
+                                swipeRefreshState.isRefreshing = false
                             }
+                        },
+                        indicator = { state, trigger ->
+                            SwipeRefreshIndicator(
+                                state = state,
+                                refreshTriggerDistance = trigger,
+                                scale = true,
+                                contentColor = Color.Black
+                            )
+                        }
+                    ) {
+                        if (users.itemCount > 0) {
+                            LazyColumn(
+                                modifier = Modifier.fillMaxSize(),
+                                contentPadding = PaddingValues(16.dp),
+                                state = scrollState,
+                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                items(items = users) { user ->
+                                    UserChip(user!!)
+                                }
 
-                            users.apply {
-                                val exception = loadState.refresh as? LoadState.Error
-                                    ?: loadState.prepend as? LoadState.Error
-                                    ?: loadState.append as? LoadState.Error
+                                users.apply {
+                                    val exception = loadState.refresh as? LoadState.Error
+                                        ?: loadState.prepend as? LoadState.Error
+                                        ?: loadState.append as? LoadState.Error
 
-                                when {
-                                    loadState.refresh is LoadState.Loading -> { // TODO: Why not working?
-                                        item {
-                                            SearchingItem(modifier = Modifier.fillParentMaxSize())
+                                    when {
+                                        loadState.refresh is LoadState.Loading -> { // TODO: Why not working?
+                                            item {
+                                                SearchingItem(modifier = Modifier.fillParentMaxSize())
+                                            }
                                         }
-                                    }
-                                    loadState.prepend is LoadState.Loading || loadState.append is LoadState.Loading -> { // TODO: Why not prepend working?
-                                        item {
-                                            LoadingItem()
+                                        loadState.prepend is LoadState.Loading || loadState.append is LoadState.Loading -> { // TODO: Why not prepend working?
+                                            item {
+                                                LoadingItem()
+                                            }
                                         }
-                                    }
-                                    exception != null -> {
-                                        item {
-                                            PagingExceptionItem(
-                                                throwable = exception.error,
-                                                paginationItems = users
-                                            )
+                                        exception != null -> {
+                                            item {
+                                                PagingExceptionItem(
+                                                    throwable = exception.error,
+                                                    paginationItems = users
+                                                )
+                                            }
                                         }
                                     }
                                 }
                             }
+                        } else {
+                            EmptyUsers()
                         }
-                    } else {
-                        EmptyUsers()
                     }
                 } else {
                     EmptyUsers()
