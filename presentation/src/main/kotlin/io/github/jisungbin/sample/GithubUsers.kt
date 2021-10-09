@@ -13,6 +13,7 @@ import android.app.Application
 import android.widget.Toast
 import dagger.hilt.android.HiltAndroidApp
 import io.github.jisungbin.erratum.Erratum
+import io.github.jisungbin.sample.util.extension.toast
 import java.util.Calendar
 
 @HiltAndroidApp
@@ -26,6 +27,6 @@ class GithubUsers : Application() {
             " ${builtDate.get(Calendar.MINUTE)}m " +
             "${builtDate.get(Calendar.SECOND)}s"
 
-        Toast.makeText(applicationContext, "Built at: $builtTime", Toast.LENGTH_LONG).show()
+        toast(applicationContext, "Built at: $builtTime", Toast.LENGTH_LONG)
     }
 }

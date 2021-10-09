@@ -14,4 +14,8 @@
     <string name="activity_search_text_empty_display_users">The list of users to display is empty!</string>
     <string name="activity_search_text_exception">An error occurred while searching the users 😢\n\n%s</string>
     <string name="activity_search_button_retry_load">Retry load</string>
+
+    <string name="activity_profile_repository_empty">User\'s repository is empty!</string>
+
+    <string name="web_toast_non_install_browser">No browser app installed.</string>
 </resources>
