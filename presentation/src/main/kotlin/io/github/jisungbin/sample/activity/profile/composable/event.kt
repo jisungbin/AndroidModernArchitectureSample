@@ -14,7 +14,6 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,6 +22,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -32,9 +32,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -97,7 +99,7 @@ private fun EventChip(event: GithubUserEventItem) {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp)
+            .height(80.dp)
     ) {
         val (avatar, loginId, type, createdAt, repository) = createRefs()
 
@@ -114,7 +116,7 @@ private fun EventChip(event: GithubUserEventItem) {
         )
         Text(
             modifier = Modifier.constrainAs(loginId) {
-                start.linkTo(avatar.end, 4.dp)
+                start.linkTo(avatar.end, 8.dp)
                 top.linkTo(avatar.top)
                 bottom.linkTo(avatar.bottom)
             },
@@ -124,7 +126,7 @@ private fun EventChip(event: GithubUserEventItem) {
         )
         Text(
             modifier = Modifier.constrainAs(type) {
-                start.linkTo(loginId.start, 2.dp)
+                start.linkTo(loginId.end, 4.dp)
                 top.linkTo(avatar.top)
                 bottom.linkTo(avatar.bottom)
             },
@@ -133,7 +135,7 @@ private fun EventChip(event: GithubUserEventItem) {
         )
         Text(
             modifier = Modifier.constrainAs(createdAt) {
-                start.linkTo(type.start, 2.dp)
+                start.linkTo(type.end, 4.dp)
                 top.linkTo(avatar.top)
                 bottom.linkTo(avatar.bottom)
             },
@@ -143,8 +145,11 @@ private fun EventChip(event: GithubUserEventItem) {
         )
         EventRepositoryItem(
             modifier = Modifier.constrainAs(repository) {
-                start.linkTo(avatar.end, 4.dp)
+                start.linkTo(avatar.end, 8.dp)
+                end.linkTo(parent.end)
                 top.linkTo(avatar.bottom)
+                bottom.linkTo(parent.bottom)
+                width = Dimension.fillToConstraints
             },
             repoPatch = event.repoPatch
         )
@@ -156,21 +161,19 @@ private fun EventRepositoryItem(modifier: Modifier, repoPatch: String) {
     val context = LocalContext.current
     val address = "https://github.com/$repoPatch"
 
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(50.dp)
-            .padding(16.dp),
-        verticalArrangement = Arrangement.SpaceEvenly
+    Card(
+        modifier = modifier.clickable {
+            Web.open(context = context, address = address)
+        },
+        elevation = 2.dp
     ) {
-        Text(text = repoPatch, color = Color.Black, fontSize = 18.sp)
         Text(
-            modifier = Modifier.clickable {
-                Web.open(context = context, address = address)
-            },
-            text = address,
-            color = Color.Gray,
-            fontSize = 15.sp
+            modifier = Modifier.padding(8.dp),
+            text = repoPatch,
+            color = Color.Black,
+            fontSize = 15.sp,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }

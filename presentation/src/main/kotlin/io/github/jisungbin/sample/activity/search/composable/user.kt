@@ -40,8 +40,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -161,7 +163,7 @@ private fun UserChip(user: GithubUserItem) {
         backgroundColor = Color.White,
         elevation = 2.dp
     ) {
-        ConstraintLayout(modifier = Modifier.padding(vertical = 8.dp)) {
+        ConstraintLayout(modifier = Modifier.padding(horizontal = 8.dp)) {
             val (loginId, avatar) = createRefs()
 
             Text(
@@ -170,6 +172,7 @@ private fun UserChip(user: GithubUserItem) {
                     end.linkTo(avatar.start, 8.dp)
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
+                    width = Dimension.fillToConstraints
                 },
                 text = user.loginId,
                 maxLines = 1,

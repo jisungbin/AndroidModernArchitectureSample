@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -36,9 +35,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.PagingData
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -142,27 +144,31 @@ private fun Header(user: GithubUserInformation?) {
 
                 Column(
                     modifier = Modifier
-                        .wrapContentSize()
                         .constrainAs(profileContainer) {
-                            start.linkTo(parent.start)
+                            start.linkTo(parent.start, 8.dp)
                             end.linkTo(avatar.start, 8.dp)
                             top.linkTo(parent.top)
                             bottom.linkTo(parent.bottom)
+                            width = Dimension.fillToConstraints
+                            height = Dimension.fillToConstraints
                         },
-                    verticalArrangement = Arrangement.SpaceAround,
+                    verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
                         text = user!!.loginId,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        color = Color.Black
+                        color = Color.Black,
+                        fontSize = 25.sp
                     )
                     Text(
+                        modifier = Modifier.padding(top = 8.dp),
                         text = user.bio,
                         maxLines = 3,
                         overflow = TextOverflow.Ellipsis,
-                        color = Color.Gray
+                        color = Color.Gray,
+                        textAlign = TextAlign.Center
                     )
                 }
                 CoilImage(

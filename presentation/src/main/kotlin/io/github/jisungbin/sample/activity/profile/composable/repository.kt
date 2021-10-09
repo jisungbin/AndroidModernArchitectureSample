@@ -22,8 +22,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
@@ -35,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.jisungbin.sample.R
@@ -50,12 +53,12 @@ fun Repositories(repositories: GithubUserRepositories?) {
 
         Crossfade(repositoriesItem.isNotEmpty()) { repositoriesNotEmpty ->
             if (repositoriesNotEmpty) {
-                LazyColumn(
+                LazyRow(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentWidth(),
                     contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     items(items = repositoriesItem) { repository ->
                         RepositoryItem(repository = repository)
@@ -75,22 +78,37 @@ private fun RepositoryItem(repository: GithubUserRepositoryItem) {
 
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(100.dp),
+            .widthIn(max = 300.dp)
+            .height(110.dp),
         elevation = 2.dp
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .clickable {
+                    Web.open(context = context, address = address)
+                }
                 .padding(16.dp),
-            verticalArrangement = Arrangement.SpaceEvenly
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = repository.name, color = Color.Black, fontSize = 18.sp)
-            Text(text = repository.description, color = Color.Gray, fontSize = 15.sp)
+            Text(
+                text = repository.name,
+                color = Color.Black,
+                fontSize = 18.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(
+                text = repository.description,
+                color = Color.Gray,
+                fontSize = 13.sp,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 RepositoryInformationChip(
                     iconRes = R.drawable.ic_round_circle_24,
@@ -99,13 +117,6 @@ private fun RepositoryItem(repository: GithubUserRepositoryItem) {
                 RepositoryInformationChip(
                     iconRes = R.drawable.ic_round_star_24,
                     text = repository.stargazersCount.toString()
-                )
-                RepositoryInformationChip(
-                    modifier = Modifier.clickable {
-                        Web.open(context = context, address = address)
-                    },
-                    iconRes = R.drawable.ic_baseline_insert_link_24,
-                    text = address.replace("https://", "")
                 )
             }
         }
@@ -119,7 +130,12 @@ private fun RepositoryInformationChip(
     text: String
 ) {
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
-        Icon(painter = painterResource(iconRes), contentDescription = null, tint = Color.Gray)
+        Icon(
+            modifier = Modifier.size(20.dp),
+            painter = painterResource(iconRes),
+            contentDescription = null,
+            tint = Color.Gray
+        )
         Text(
             modifier = Modifier.padding(start = 4.dp),
             text = text,
