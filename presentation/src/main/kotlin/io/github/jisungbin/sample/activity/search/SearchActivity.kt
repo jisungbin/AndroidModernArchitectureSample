@@ -12,7 +12,9 @@ package io.github.jisungbin.sample.activity.search
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,6 +36,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -181,11 +184,11 @@ class SearchActivity : ComponentActivity() {
                                 }
                             }
                         } else {
-                            EmptyUsers()
+                            SearchingOrEmptyUsers(searching = true)
                         }
                     }
                 } else {
-                    EmptyUsers()
+                    SearchingOrEmptyUsers()
                 }
             }
         }
@@ -219,9 +222,19 @@ class SearchActivity : ComponentActivity() {
         }
     }
 
+    @OptIn(ExperimentalAnimationApi::class)
     @Composable
-    private fun EmptyUsers() {
-        val lottieComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.empty))
+    private fun SearchingOrEmptyUsers(searching: Boolean = false) {
+        var lottieRawRes by remember { mutableStateOf(R.raw.empty) }
+        val lottieComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(lottieRawRes))
+
+        if (searching) {
+            LaunchedEffect(Unit) {
+                lottieRawRes = R.raw.searching
+                delay(2500)
+                lottieRawRes = R.raw.empty
+            }
+        }
 
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -233,11 +246,13 @@ class SearchActivity : ComponentActivity() {
                 iterations = LottieConstants.IterateForever,
                 composition = lottieComposition,
             )
-            Text(
-                modifier = Modifier.padding(top = 30.dp),
-                text = stringResource(R.string.activity_search_text_empty_display_users),
-                color = Color.Gray
-            )
+            AnimatedVisibility(lottieRawRes == R.raw.empty) {
+                Text(
+                    modifier = Modifier.padding(top = 30.dp),
+                    text = stringResource(R.string.activity_search_text_empty_display_users),
+                    color = Color.Gray
+                )
+            }
         }
     }
 
