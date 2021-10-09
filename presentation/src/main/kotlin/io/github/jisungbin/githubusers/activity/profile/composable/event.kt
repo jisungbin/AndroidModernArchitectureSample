@@ -9,7 +9,6 @@
 
 package io.github.jisungbin.githubusers.activity.profile.composable
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
@@ -51,45 +50,43 @@ import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun Events(eventsPagingDataFlow: Flow<PagingData<GithubUserEventItem>>?) {
-    AnimatedVisibility(eventsPagingDataFlow != null) {
-        val eventsLazyPagingItems = eventsPagingDataFlow!!.collectAsLazyPagingItems()
+fun Events(eventsPagingDataFlow: Flow<PagingData<GithubUserEventItem>>) {
+    val eventsLazyPagingItems = eventsPagingDataFlow.collectAsLazyPagingItems()
 
-        Crossfade(eventsLazyPagingItems.itemCount > 0) { eventsNotEmpty ->
-            if (eventsNotEmpty) {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    items(items = eventsLazyPagingItems) { event ->
-                        EventChip(event!!)
-                    }
-                    eventsLazyPagingItems.apply {
-                        val exception = loadState.refresh as? LoadState.Error
-                            ?: loadState.prepend as? LoadState.Error
-                            ?: loadState.append as? LoadState.Error
+    Crossfade(eventsLazyPagingItems.itemCount > 0) { eventsNotEmpty ->
+        if (eventsNotEmpty) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(items = eventsLazyPagingItems) { event ->
+                    EventChip(event!!)
+                }
+                eventsLazyPagingItems.apply {
+                    val exception = loadState.refresh as? LoadState.Error
+                        ?: loadState.prepend as? LoadState.Error
+                        ?: loadState.append as? LoadState.Error
 
-                        when {
-                            loadState.prepend is LoadState.Loading || loadState.append is LoadState.Loading -> { // TODO: Why not prepend working?
-                                item {
-                                    PagingLoadingItem()
-                                }
+                    when {
+                        loadState.prepend is LoadState.Loading || loadState.append is LoadState.Loading -> { // TODO: Why not prepend working?
+                            item {
+                                PagingLoadingItem()
                             }
-                            exception != null -> {
-                                item {
-                                    PagingExceptionItem(
-                                        throwable = exception.error,
-                                        paginationItems = eventsLazyPagingItems
-                                    )
-                                }
+                        }
+                        exception != null -> {
+                            item {
+                                PagingExceptionItem(
+                                    throwable = exception.error,
+                                    paginationItems = eventsLazyPagingItems
+                                )
                             }
                         }
                     }
                 }
-            } else {
-                LoadingOrEmptyItem(message = stringResource(R.string.activity_profile_composable_empty_event))
             }
+        } else {
+            LoadingOrEmptyItem(message = stringResource(R.string.activity_profile_composable_empty_event))
         }
     }
 }

@@ -123,88 +123,91 @@ fun Profile(loginId: String) {
             )
         }
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            Header(user = userInformation)
-            Repositories(repositories = userRepositories)
-            Events(eventsPagingDataFlow = userEventsPagingData)
+        Crossfade(userInformation != null && userRepositories != null && userEventsPagingData != null) { isLoaded ->
+            if (isLoaded) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Header(user = userInformation!!)
+                    Repositories(repositories = userRepositories!!)
+                    Events(eventsPagingDataFlow = userEventsPagingData!!)
+                }
+            } else {
+                PagingRefreshItem(
+                    modifier = Modifier.fillMaxSize(),
+                    lottieRes = R.raw.loading_profile
+                )
+            }
         }
     }
 }
 
 @Composable
-private fun Header(user: GithubUserInformation?) {
+private fun Header(user: GithubUserInformation) {
     val context = LocalContext.current
 
-    Crossfade(user != null) { isUserLoaded ->
-        if (isUserLoaded) {
-            ConstraintLayout(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(16.dp),
-            ) {
-                val (profileContainer, avatar) = createRefs()
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .padding(16.dp),
+    ) {
+        val (profileContainer, avatar) = createRefs()
 
-                Column(
-                    modifier = Modifier
-                        .constrainAs(profileContainer) {
-                            start.linkTo(parent.start, 8.dp)
-                            end.linkTo(avatar.start, 8.dp)
-                            top.linkTo(parent.top)
-                            bottom.linkTo(parent.bottom)
-                            width = Dimension.fillToConstraints
-                            height = Dimension.fillToConstraints
-                        },
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = user!!.loginId,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        color = Color.Black,
-                        fontSize = 20.sp
-                    )
-                    if (user.bio != "") {
-                        Text(
-                            modifier = Modifier.padding(top = 4.dp),
-                            text = user.bio,
-                            maxLines = 3,
-                            overflow = TextOverflow.Ellipsis,
-                            color = Color.Gray,
-                            textAlign = TextAlign.Center,
-                            fontSize = 13.sp
-                        )
-                    }
-                }
-                CoilImage(
-                    modifier = Modifier
-                        .size(100.dp)
-                        .clip(RoundedCornerShape(5.dp))
-                        .constrainAs(avatar) {
-                            end.linkTo(parent.end)
-                            top.linkTo(parent.top)
-                            bottom.linkTo(parent.bottom)
-                        }
-                        .clickable {
-                            val imageViewActivityIntent =
-                                Intent(context, ImageViewActivity::class.java)
-                            imageViewActivityIntent.putExtra(
-                                IntentConstant.ImageUrl,
-                                user!!.avatarUrl
-                            )
-                            context.startActivity(imageViewActivityIntent)
-                        },
-                    imageModel = user!!.avatarUrl,
-                    contentScale = ContentScale.Crop,
+        Column(
+            modifier = Modifier
+                .constrainAs(profileContainer) {
+                    start.linkTo(parent.start, 8.dp)
+                    end.linkTo(avatar.start, 8.dp)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                    width = Dimension.fillToConstraints
+                    height = Dimension.fillToConstraints
+                },
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = user!!.loginId,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                color = Color.Black,
+                fontSize = 20.sp
+            )
+            if (user.bio != "") {
+                Text(
+                    modifier = Modifier.padding(top = 4.dp),
+                    text = user.bio,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis,
+                    color = Color.Gray,
+                    textAlign = TextAlign.Center,
+                    fontSize = 13.sp
                 )
             }
-        } else {
-            PagingRefreshItem(modifier = Modifier.fillMaxSize(), lottieRes = R.raw.loading_profile)
         }
+        CoilImage(
+            modifier = Modifier
+                .size(100.dp)
+                .clip(RoundedCornerShape(5.dp))
+                .constrainAs(avatar) {
+                    end.linkTo(parent.end)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                }
+                .clickable {
+                    val imageViewActivityIntent =
+                        Intent(context, ImageViewActivity::class.java)
+                    imageViewActivityIntent.putExtra(
+                        IntentConstant.ImageUrl,
+                        user!!.avatarUrl
+                    )
+                    context.startActivity(imageViewActivityIntent)
+                },
+            imageModel = user!!.avatarUrl,
+            contentScale = ContentScale.Crop,
+        )
     }
 }
 

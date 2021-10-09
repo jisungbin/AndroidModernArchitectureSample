@@ -10,7 +10,6 @@
 package io.github.jisungbin.githubusers.activity.profile.composable
 
 import androidx.annotation.DrawableRes
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
@@ -46,26 +45,24 @@ import io.github.jisungbin.githubusers.util.Web
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun Repositories(repositories: GithubUserRepositories?) {
-    AnimatedVisibility(repositories != null) {
-        val repositoriesItem = repositories!!.items
+fun Repositories(repositories: GithubUserRepositories) {
+    val repositoriesItem = repositories.items
 
-        Crossfade(repositoriesItem.isNotEmpty()) { repositoriesNotEmpty ->
-            if (repositoriesNotEmpty) {
-                LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentWidth(),
-                    contentPadding = PaddingValues(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    items(items = repositoriesItem) { repository ->
-                        RepositoryItem(repository = repository)
-                    }
+    Crossfade(repositoriesItem.isNotEmpty()) { repositoriesNotEmpty ->
+        if (repositoriesNotEmpty) {
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth(),
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(items = repositoriesItem) { repository ->
+                    RepositoryItem(repository = repository)
                 }
-            } else {
-                LoadingOrEmptyItem(stringResource(R.string.activity_profile_composable_empty_repository))
             }
+        } else {
+            LoadingOrEmptyItem(stringResource(R.string.activity_profile_composable_empty_repository))
         }
     }
 }
