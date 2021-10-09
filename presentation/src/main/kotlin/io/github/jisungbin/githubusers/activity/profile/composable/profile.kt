@@ -168,15 +168,17 @@ private fun Header(user: GithubUserInformation?) {
                         color = Color.Black,
                         fontSize = 20.sp
                     )
-                    Text(
-                        modifier = Modifier.padding(top = 4.dp),
-                        text = user.bio,
-                        maxLines = 3,
-                        overflow = TextOverflow.Ellipsis,
-                        color = Color.Gray,
-                        textAlign = TextAlign.Center,
-                        fontSize = 13.sp
-                    )
+                    if (user.bio != "") {
+                        Text(
+                            modifier = Modifier.padding(top = 4.dp),
+                            text = user.bio,
+                            maxLines = 3,
+                            overflow = TextOverflow.Ellipsis,
+                            color = Color.Gray,
+                            textAlign = TextAlign.Center,
+                            fontSize = 13.sp
+                        )
+                    }
                 }
                 CoilImage(
                     modifier = Modifier
