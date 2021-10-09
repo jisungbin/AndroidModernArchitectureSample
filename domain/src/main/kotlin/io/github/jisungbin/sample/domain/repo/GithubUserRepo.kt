@@ -26,8 +26,8 @@ interface GithubUserRepo {
     suspend fun searchPagination(
         scope: CoroutineScope,
         query: String,
-        page: Int,
-        perPage: Int
+        perPage: Int,
+        maxSize: Int
     ): Flow<PagingData<GithubUserItem>>
 
     suspend fun getEvents(
@@ -39,8 +39,8 @@ interface GithubUserRepo {
     suspend fun getEventsPagination(
         scope: CoroutineScope,
         loginId: String,
-        page: Int,
-        perPage: Int
+        perPage: Int,
+        maxSize: Int
     ): Flow<PagingData<GithubUserEventItem>>
 
     suspend fun getInformation(loginId: String): Flow<GithubResult<GithubUserInformation>>

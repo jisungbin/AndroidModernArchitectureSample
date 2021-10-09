@@ -77,13 +77,13 @@ class GithubUserRepoImpl(private val context: Context, retrofit: Retrofit) : Git
     override suspend fun searchPagination(
         scope: CoroutineScope,
         query: String,
-        @IntRange(from = 1, to = 101) page: Int,
-        @IntRange(from = 100, to = 501) perPage: Int
+        @IntRange(from = 1, to = 101) perPage: Int,
+        @IntRange(from = 100, to = 501) maxSize: Int
     ) = Pager(
         config = PagingConfig(
-            pageSize = page,
+            pageSize = perPage,
             enablePlaceholders = false,
-            maxSize = perPage
+            maxSize = maxSize
         ),
         pagingSourceFactory = { UserSearchPagingSource(this, query) }
     ).flow.cachedIn(scope = scope)
@@ -122,13 +122,13 @@ class GithubUserRepoImpl(private val context: Context, retrofit: Retrofit) : Git
     override suspend fun getEventsPagination(
         scope: CoroutineScope,
         loginId: String,
-        @IntRange(from = 1, to = 101) page: Int,
-        @IntRange(from = 100, to = 501) perPage: Int
+        @IntRange(from = 1, to = 101) perPage: Int,
+        @IntRange(from = 100, to = 501) maxSize: Int
     ) = Pager(
         config = PagingConfig(
-            pageSize = page,
+            pageSize = perPage,
             enablePlaceholders = false,
-            maxSize = perPage
+            maxSize = maxSize
         ),
         pagingSourceFactory = { UserEventsPagingSource(repo = this, loginId = loginId) }
     ).flow.cachedIn(scope = scope)

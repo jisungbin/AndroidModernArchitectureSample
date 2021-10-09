@@ -16,12 +16,12 @@ class GithubUserSearchPaginationUseCase(private val repo: GithubUserRepo) {
     suspend operator fun invoke(
         query: String,
         scope: CoroutineScope,
-        page: Int,
-        perPage: Int
+        perPage: Int,
+        maxSize: Int
     ) = repo.searchPagination(
         query = query,
         scope = scope,
-        page = page,
-        perPage = perPage
+        perPage = perPage,
+        maxSize = maxSize
     )
 }
