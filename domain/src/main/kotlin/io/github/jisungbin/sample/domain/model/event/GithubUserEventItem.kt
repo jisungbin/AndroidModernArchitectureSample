@@ -10,8 +10,10 @@
 package io.github.jisungbin.sample.domain.model.event
 
 data class GithubUserEventItem(
-    val actor: Actor,
+    val avatarUrl: String,
+    val loginId: String,
     val type: String,
     val createdAt: String,
-    val repo: Repo
+    val repoName: String,
+    val repoUrl: String
 )

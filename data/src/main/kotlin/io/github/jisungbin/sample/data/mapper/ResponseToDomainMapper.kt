@@ -9,14 +9,57 @@
 
 package io.github.jisungbin.sample.data.mapper
 
+import io.github.jisungbin.sample.data.model.event.GithubUserEventItem
 import io.github.jisungbin.sample.data.model.infomation.GithubUserInformationResponse
+import io.github.jisungbin.sample.data.model.repository.GithubUserRepositoryItem
 import io.github.jisungbin.sample.data.model.user.GithubUsersResponse
+import io.github.jisungbin.sample.data.util.ISO8601Util
+import io.github.jisungbin.sample.domain.model.event.GithubUserEvents
+import io.github.jisungbin.sample.domain.model.information.GithubUserInformation
+import io.github.jisungbin.sample.domain.model.repository.GithubUserRepositories
 import io.github.jisungbin.sample.domain.model.user.GithubUser
+
+private typealias GithubUserRepositoryItemDomain = io.github.jisungbin.sample.domain.model.repository.GithubUserRepositoryItem
+private typealias GithubUserEventItemDomain = io.github.jisungbin.sample.domain.model.event.GithubUserEventItem
 
 internal fun GithubUsersResponse.toDomain(): List<GithubUser> {
     return items?.map { user ->
-        GithubUser(loginId = user.loginId ?: "null", avatarUrl = user.avatarUrl ?: "")
+        GithubUser(loginId = user.login ?: "null", avatarUrl = user.avatarUrl ?: "")
     } ?: emptyList()
 }
 
-internal fun GithubUserInformationResponse.toDomain(): List<>
+internal fun GithubUserInformationResponse.toDomain() = GithubUserInformation(
+    bio = bio ?: "",
+    loginId = login ?: "null",
+    avatarUrl = avatarUrl ?: ""
+)
+
+@JvmName("toDomainGithubUserRepositoryItem")
+internal fun List<GithubUserRepositoryItem>.toDomain(): GithubUserRepositories {
+    return GithubUserRepositories(
+        items = map { userRepository ->
+            GithubUserRepositoryItemDomain(
+                name = userRepository.name ?: "null",
+                description = userRepository.description ?: "",
+                language = userRepository.language ?: "",
+                stargazersCount = userRepository.stargazersCount ?: 0
+            )
+        }
+    )
+}
+
+@JvmName("toDomainGithubUserEventItem")
+internal fun List<GithubUserEventItem>.toDomain(): GithubUserEvents {
+    return GithubUserEvents(
+        items = map { userEvent ->
+            GithubUserEventItemDomain(
+                avatarUrl = userEvent.actor?.avatarUrl ?: "",
+                loginId = userEvent.actor?.login ?: "",
+                type = userEvent.type ?: "null",
+                createdAt = ISO8601Util.convertRealTime(userEvent.createdAt) ?: "",
+                repoName = userEvent.repo?.name ?: "",
+                repoUrl = userEvent.repo?.url ?: ""
+            )
+        }
+    )
+}

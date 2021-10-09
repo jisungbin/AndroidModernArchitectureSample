@@ -25,7 +25,7 @@ data class UserItem(
     val starredUrl: String? = null,
 
     @field:JsonProperty("login")
-    val loginId: String? = null,
+    val login: String? = null,
 
     @field:JsonProperty("followers_url")
     val followersUrl: String? = null,

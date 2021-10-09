@@ -15,7 +15,7 @@ import io.github.jisungbin.sample.data.model.user.GithubUsersResponse
 internal fun GithubUsersResponse.toEntity(searchKeyword: String): List<GithubUserEntity> {
     return items?.map { user ->
         GithubUserEntity(
-            loginId = user.loginId ?: "null",
+            loginId = user.login ?: "null",
             avatarUrl = user.avatarUrl ?: "",
             searchKeyword = searchKeyword
         )
