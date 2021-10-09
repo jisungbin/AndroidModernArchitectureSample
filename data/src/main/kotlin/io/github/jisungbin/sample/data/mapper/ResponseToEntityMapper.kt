@@ -56,8 +56,7 @@ internal fun List<GithubUserEventItem>.toEntity(): List<GithubUserEventEntity> {
             loginId = userEvent.actor?.login ?: "",
             type = userEvent.type ?: "null",
             createdAt = ISO8601Util.convertRealTime(userEvent.createdAt) ?: "",
-            repoName = userEvent.repo?.name ?: "",
-            repoUrl = userEvent.repo?.url ?: ""
+            repoPatch = userEvent.repo?.name ?: ""
         )
     }
 }

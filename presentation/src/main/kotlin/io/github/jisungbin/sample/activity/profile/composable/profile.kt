@@ -9,26 +9,16 @@
 
 package io.github.jisungbin.sample.activity.profile.composable
 
-import androidx.annotation.DrawableRes
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.clickable
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,46 +33,74 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.paging.LoadState
 import androidx.paging.PagingData
-import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.skydoves.landscapist.coil.CoilImage
 import io.github.jisungbin.sample.R
 import io.github.jisungbin.sample.activity.profile.ProfileViewModel
+import io.github.jisungbin.sample.activity.profile.mvi.MviProfileState
+import io.github.jisungbin.sample.domain.model.event.GithubUserEventItem
 import io.github.jisungbin.sample.domain.model.information.GithubUserInformation
 import io.github.jisungbin.sample.domain.model.repository.GithubUserRepositories
-import io.github.jisungbin.sample.domain.model.repository.GithubUserRepositoryItem
-import io.github.jisungbin.sample.domain.model.user.GithubUserItem
-import io.github.jisungbin.sample.ui.PagingExceptionItem
-import io.github.jisungbin.sample.util.Web
+import io.github.jisungbin.sample.util.extension.toast
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import org.orbitmvi.orbit.viewmodel.observe
 
 @Composable
-fun Profile(user: GithubUserInformation) {
+fun Profile(loginId: String) {
+    val context = LocalContext.current
     val vm: ProfileViewModel = viewModel()
-    val swipeRefreshState = rememberSwipeRefreshState(false)
     val coroutineScope = rememberCoroutineScope()
+    val lifeCycleOwner = LocalLifecycleOwner.current
+    val swipeRefreshState = rememberSwipeRefreshState(false)
+
+    var userInformation by remember { mutableStateOf<GithubUserInformation?>(null) }
+    var userRepositories by remember { mutableStateOf<GithubUserRepositories?>(null) }
+    var userEventsPagingData by remember {
+        mutableStateOf<Flow<PagingData<GithubUserEventItem>>?>(null)
+    }
+
+    suspend fun refresh() {
+        vm.getUserInformation(loginId)
+        vm.getUserRepositories(loginId)
+        userEventsPagingData = vm.getUserEventsPagination(loginId)
+    }
+
+    LaunchedEffect(vm) {
+        vm.observe(
+            lifecycleOwner = lifeCycleOwner,
+            state = { state ->
+                handleState(
+                    context = context,
+                    state = state,
+                    updateUserInformation = { _userInformation ->
+                        userInformation = _userInformation
+                    },
+                    updateUserRepositories = { _userRepositories ->
+                        userRepositories = _userRepositories
+                    }
+                )
+            },
+            sideEffect = null
+        )
+        refresh()
+    }
 
     SwipeRefresh(
         state = swipeRefreshState,
         onRefresh = {
             coroutineScope.launch {
                 swipeRefreshState.isRefreshing = true
-                // usersLazyPagingItems.refresh()
+                refresh()
                 delay(1000)
                 swipeRefreshState.isRefreshing = false
             }
@@ -96,7 +114,6 @@ fun Profile(user: GithubUserInformation) {
             )
         }
     ) {
-
     }
 }
 
@@ -150,141 +167,27 @@ private fun Header(user: GithubUserInformation) {
     }
 }
 
-@Composable
-fun Repositories(_repositories: GithubUserRepositories) {
-    val repositories = _repositories.items
-
-    if (repositories.isNotEmpty()) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentWidth(),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            items(items = repositories) { repository ->
-                RepositoryItem(repository = repository)
-            }
-        }
-    } else {
-    }
-}
-
-@Composable
-private fun RepositoryItem(repository: GithubUserRepositoryItem) {
-    val context = LocalContext.current
-    val address = "https://github.com/${repository.ownerLoginId}/${repository.name}"
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(100.dp)
-            .padding(16.dp)
-    ) {
-        Text(text = repository.name, color = Color.Black, fontSize = 18.sp)
-        Text(text = repository.description, color = Color.Gray, fontSize = 15.sp)
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            RepositoryInformationChip(
-                iconRes = R.drawable.ic_round_circle_24,
-                text = repository.language
-            )
-            RepositoryInformationChip(
-                iconRes = R.drawable.ic_round_star_24,
-                text = repository.stargazersCount.toString()
-            )
-            RepositoryInformationChip(
-                modifier = Modifier.clickable {
-                    Web.open(context, address)
-                },
-                iconRes = R.drawable.ic_baseline_insert_link_24,
-                text = address.replace("https://", "")
-            )
-        }
-    }
-}
-
-@Composable
-private fun RepositoryInformationChip(
-    modifier: Modifier = Modifier,
-    @DrawableRes iconRes: Int,
-    text: String
+private fun handleState(
+    context: Context,
+    state: MviProfileState,
+    updateUserInformation: (GithubUserInformation) -> Unit,
+    updateUserRepositories: (GithubUserRepositories) -> Unit,
 ) {
-    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
-        Icon(painter = painterResource(iconRes), contentDescription = null, tint = Color.Gray)
-        Text(
-            modifier = Modifier.padding(start = 4.dp),
-            text = text,
-            color = Color.Gray,
-            fontSize = 13.sp
-        )
-    }
-}
-
-@Composable
-fun Events(eventsPagingDataFlow: Flow<PagingData<GithubUserItem>>?) {
-    if (eventsPagingDataFlow != null) {
-        val eventsLazyPagingItems = eventsPagingDataFlow.collectAsLazyPagingItems()
-
-        if (eventsLazyPagingItems.itemCount > 0) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(items = eventsLazyPagingItems) { event ->
-                    // (user!!)
-                }
-                eventsLazyPagingItems.apply {
-                    val exception = loadState.refresh as? LoadState.Error
-                        ?: loadState.prepend as? LoadState.Error
-                        ?: loadState.append as? LoadState.Error
-
-                    when {
-                        loadState.prepend is LoadState.Loading || loadState.append is LoadState.Loading -> { // TODO: Why not prepend working?
-                            item {
-                                // LoadingItem()
-                            }
-                        }
-                        exception != null -> {
-                            item {
-                                PagingExceptionItem(
-                                    throwable = exception.error,
-                                    paginationItems = eventsLazyPagingItems
-                                )
-                            }
-                        }
-                    }
-                }
+    if (state.loaded) {
+        if (!state.isException()) {
+            when {
+                state.userInformation != null -> updateUserInformation(state.userInformation)
+                state.userRepositories != null -> updateUserRepositories(state.userRepositories)
             }
         } else {
-            LoadingOrEmptyItem(message = stringResource(R.string.activity_profile_composable_empty_event))
+            toast(
+                context = context,
+                message = context.getString(
+                    R.string.ui_paging_exception_item_message,
+                    state.exception?.message ?: "Can't load exception message"
+                ),
+                length = Toast.LENGTH_LONG
+            )
         }
-    }
-}
-
-@OptIn(ExperimentalAnimationApi::class)
-@Composable
-private fun LoadingOrEmptyItem(message: String) {
-    var empty by remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-        delay(2500)
-        empty = true
-    }
-
-    AnimatedVisibility(empty) {
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .wrapContentWidth(),
-            text = message,
-            textAlign = TextAlign.Center,
-            color = Color.Gray
-        )
     }
 }

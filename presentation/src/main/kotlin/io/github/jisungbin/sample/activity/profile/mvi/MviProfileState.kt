@@ -13,13 +13,9 @@ import io.github.jisungbin.sample.domain.model.information.GithubUserInformation
 import io.github.jisungbin.sample.domain.model.repository.GithubUserRepositories
 import io.github.jisungbin.sample.mvi.BaseMviState
 
-data class MviProfileActivityState(
+data class MviProfileState(
     override val loaded: Boolean = false,
     override val exception: Exception? = null,
-    val userInformation: GithubUserInformation = GithubUserInformation(
-        bio = "",
-        loginId = "",
-        avatarUrl = ""
-    ),
-    val userRepositories: GithubUserRepositories = GithubUserRepositories(emptyList())
+    val userInformation: GithubUserInformation? = null,
+    val userRepositories: GithubUserRepositories? = null
 ) : BaseMviState

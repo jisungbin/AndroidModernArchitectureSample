@@ -14,6 +14,5 @@ data class GithubUserEventItem(
     val loginId: String,
     val type: String,
     val createdAt: String,
-    val repoName: String,
-    val repoUrl: String
+    val repoPatch: String,
 )

@@ -12,33 +12,20 @@ package io.github.jisungbin.sample.activity.profile
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import dagger.hilt.android.AndroidEntryPoint
+import io.github.jisungbin.sample.activity.profile.composable.Profile
 import io.github.jisungbin.sample.theme.MaterialTheme
+import io.github.jisungbin.sample.util.constant.IntentConstant
 
 @AndroidEntryPoint
 class ProfileActivity : ComponentActivity() {
-
-    private val vm: ProfileViewModel by viewModels()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
             MaterialTheme {
-                Screen()
+                Profile(loginId = intent.getStringExtra(IntentConstant.GithubUserId)!!)
             }
-        }
-    }
-
-    @Composable
-    private fun Screen() {
-        Column(modifier = Modifier.fillMaxSize()) {
-
         }
     }
 }

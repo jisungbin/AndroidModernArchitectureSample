@@ -20,11 +20,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -55,7 +53,9 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.skydoves.landscapist.coil.CoilImage
 import io.github.jisungbin.sample.R
 import io.github.jisungbin.sample.domain.model.user.GithubUserItem
-import io.github.jisungbin.sample.ui.PagingExceptionItem
+import io.github.jisungbin.sample.ui.paging.PagingExceptionItem
+import io.github.jisungbin.sample.ui.paging.PagingLoadingItem
+import io.github.jisungbin.sample.ui.paging.PagingRefreshItem
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -106,12 +106,15 @@ fun Users(usersPagingDataFlow: Flow<PagingData<GithubUserItem>>?, scrollState: L
                             when {
                                 loadState.refresh is LoadState.Loading -> { // TODO: Why not working?
                                     item {
-                                        SearchingItem(modifier = Modifier.fillParentMaxSize())
+                                        PagingRefreshItem(
+                                            modifier = Modifier.fillParentMaxSize(),
+                                            lottieRes = R.raw.searching_user
+                                        )
                                     }
                                 }
                                 loadState.prepend is LoadState.Loading || loadState.append is LoadState.Loading -> { // TODO: Why not prepend working?
                                     item {
-                                        LoadingItem()
+                                        PagingLoadingItem()
                                     }
                                 }
                                 exception != null -> {
@@ -206,31 +209,4 @@ private fun SearchingOrEmptyUsers(searching: Boolean = false) {
             )
         }
     }
-}
-
-@Composable
-private fun SearchingItem(modifier: Modifier) {
-    val lottieComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.searching_user))
-
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        LottieAnimation(
-            modifier = Modifier.size(250.dp),
-            iterations = LottieConstants.IterateForever,
-            composition = lottieComposition,
-        )
-    }
-}
-
-@Composable
-private fun LoadingItem() {
-    CircularProgressIndicator(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .wrapContentWidth()
-    )
 }

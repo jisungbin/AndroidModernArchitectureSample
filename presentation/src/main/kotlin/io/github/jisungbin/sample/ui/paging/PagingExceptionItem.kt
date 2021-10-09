@@ -7,7 +7,7 @@
  * Please see: https://github.com/jisungbin/AndroidModernArchitectureSample/blob/master/LICENSE
  */
 
-package io.github.jisungbin.sample.ui
+package io.github.jisungbin.sample.ui.paging
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

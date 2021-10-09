@@ -23,7 +23,7 @@ import io.github.jisungbin.sample.data.local.entity.GithubUserInformationEntity
 import io.github.jisungbin.sample.data.local.entity.GithubUserRepositoryEntity
 
 @Database(
-    version = 2,
+    version = 3,
     entities = [
         GithubUserEntity::class,
         GithubUserEventEntity::class,

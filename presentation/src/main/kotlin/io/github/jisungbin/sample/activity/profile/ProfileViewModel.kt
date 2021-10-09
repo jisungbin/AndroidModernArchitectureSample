@@ -12,7 +12,7 @@ package io.github.jisungbin.sample.activity.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.jisungbin.sample.activity.profile.mvi.MviProfileActivityState
+import io.github.jisungbin.sample.activity.profile.mvi.MviProfileState
 import io.github.jisungbin.sample.domain.doWhen
 import io.github.jisungbin.sample.domain.usecase.GithubUserEventsPaginationUseCase
 import io.github.jisungbin.sample.domain.usecase.GithubUserInformationUseCase
@@ -29,12 +29,12 @@ class ProfileViewModel @Inject constructor(
     private val githubUserInformationUseCase: GithubUserInformationUseCase,
     private val githubUserRepositoriesUseCase: GithubUserRepositoriesUseCase,
     private val githubUserEventsPaginationUseCase: GithubUserEventsPaginationUseCase
-) : ContainerHost<MviProfileActivityState, Unit>, ViewModel() {
+) : ContainerHost<MviProfileState, Unit>, ViewModel() {
 
     private val defaultPageSize = 30
     private val defaultMaxSize = 100
 
-    override val container = container<MviProfileActivityState, Unit>(MviProfileActivityState())
+    override val container = container<MviProfileState, Unit>(MviProfileState())
 
     fun getUserInformation(loginId: String) = intent {
         githubUserInformationUseCase(loginId).collect { userInformationResult ->
@@ -44,7 +44,8 @@ class ProfileViewModel @Inject constructor(
                         state.copy(
                             loaded = true,
                             exception = null,
-                            userInformation = userInformation
+                            userInformation = userInformation,
+                            userRepositories = null
                         )
                     }
                 },
@@ -65,6 +66,7 @@ class ProfileViewModel @Inject constructor(
                         state.copy(
                             loaded = true,
                             exception = null,
+                            userInformation = null,
                             userRepositories = userRepositories
                         )
                     }

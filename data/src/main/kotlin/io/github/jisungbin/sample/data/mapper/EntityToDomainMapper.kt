@@ -60,8 +60,7 @@ internal fun List<GithubUserEventEntity>.toDomain(): GithubUserEvents {
                 loginId = userEvent.loginId,
                 type = userEvent.type,
                 createdAt = userEvent.createdAt,
-                repoName = userEvent.repoName,
-                repoUrl = userEvent.repoUrl
+                repoPatch = userEvent.repoPatch
             )
         }.distinctBy { event -> event.createdAt }
     )
