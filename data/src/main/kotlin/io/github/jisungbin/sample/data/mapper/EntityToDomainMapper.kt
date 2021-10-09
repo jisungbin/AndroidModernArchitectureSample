@@ -10,7 +10,54 @@
 package io.github.jisungbin.sample.data.mapper
 
 import io.github.jisungbin.sample.data.local.entity.GithubUserEntity
+import io.github.jisungbin.sample.data.local.entity.GithubUserEventEntity
+import io.github.jisungbin.sample.data.local.entity.GithubUserInformationEntity
+import io.github.jisungbin.sample.data.local.entity.GithubUserRepositoryEntity
+import io.github.jisungbin.sample.domain.model.event.GithubUserEventItem
+import io.github.jisungbin.sample.domain.model.event.GithubUserEvents
+import io.github.jisungbin.sample.domain.model.information.GithubUserInformation
+import io.github.jisungbin.sample.domain.model.repository.GithubUserRepositories
+import io.github.jisungbin.sample.domain.model.repository.GithubUserRepositoryItem
 import io.github.jisungbin.sample.domain.model.user.GithubUser
 
+@JvmName("toDomainGithubUserEntity")
 internal fun List<GithubUserEntity>.toDomain() =
     map { user -> GithubUser(loginId = user.loginId, avatarUrl = user.avatarUrl) }
+
+@JvmName("toDomainGithubUserInformationEntity")
+internal fun GithubUserInformationEntity.toDomain() = GithubUserInformation(
+    bio = bio,
+    loginId = loginId,
+    avatarUrl = avatarUrl
+)
+
+@JvmName("toDomainGithubUserRepositoryEntity")
+internal fun List<GithubUserRepositoryEntity>.toDomain(): GithubUserRepositories {
+    return GithubUserRepositories(
+        items = map { userRepository ->
+            GithubUserRepositoryItem(
+                ownerLoginId = userRepository.ownerLoginId,
+                name = userRepository.name,
+                description = userRepository.description,
+                language = userRepository.language,
+                stargazersCount = userRepository.stargazersCount
+            )
+        }
+    )
+}
+
+@JvmName("toDomainGithubUserEventEntity")
+internal fun List<GithubUserEventEntity>.toDomain(): GithubUserEvents {
+    return GithubUserEvents(
+        items = map { userEvent ->
+            GithubUserEventItem(
+                avatarUrl = userEvent.avatarUrl,
+                loginId = userEvent.loginId,
+                type = userEvent.type,
+                createdAt = userEvent.createdAt,
+                repoName = userEvent.repoName,
+                repoUrl = userEvent.repoUrl
+            )
+        }
+    )
+}
