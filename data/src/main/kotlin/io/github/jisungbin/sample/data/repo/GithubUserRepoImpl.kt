@@ -17,7 +17,6 @@ import androidx.paging.cachedIn
 import io.github.jisungbin.sample.data.api.GithubUserApi
 import io.github.jisungbin.sample.data.local.GithubUserDatabase
 import io.github.jisungbin.sample.data.local.entity.GithubUserEntity
-import io.github.jisungbin.sample.data.local.entity.GithubUserEntityMarker
 import io.github.jisungbin.sample.data.local.entity.GithubUserEventEntity
 import io.github.jisungbin.sample.data.local.entity.GithubUserInformationEntity
 import io.github.jisungbin.sample.data.local.entity.GithubUserRepositoryEntity
@@ -36,9 +35,15 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.callbackFlow
 import retrofit2.Retrofit
 
+private enum class DataType {
+    USERS, USER_EVENTS, USER_INFORMATION, USER_REPOSITORIES
+}
+
+private data class AddedData(val key: String, val type: DataType)
+
 class GithubUserRepoImpl(private val context: Context, retrofit: Retrofit) : GithubUserRepo {
     private val db = GithubUserDatabase.build(context)
-    private val addedData = mutableListOf<GithubUserEntityMarker>()
+    private val addedData = mutableListOf<AddedData>() // 중복으로 디비 저장 방지
     private val api = retrofit.create(GithubUserApi::class.java)
     private val networkAvailable get() = NetworkUtil.isNetworkAvailable(context)
 
@@ -183,32 +188,44 @@ class GithubUserRepoImpl(private val context: Context, retrofit: Retrofit) : Git
     }
 
     private suspend fun saveUsersToDatabase(users: List<GithubUserEntity>) = coroutineScope {
-        if (users.isNotEmpty() && !addedData.any { it.loginId == users.first().loginId }) {
-            addedData.addAll(users)
-            db.userDao.insertAll(users)
+        if (users.isNotEmpty()) {
+            val data = AddedData(key = users.first().loginId, type = DataType.USERS)
+            if (!addedData.contains(data)) {
+                addedData.add(data)
+                db.userDao.insertAll(users)
+            }
         }
     }
 
     private suspend fun saveUserEventsToDatabase(userEvents: List<GithubUserEventEntity>) =
         coroutineScope {
-            if (userEvents.isNotEmpty() && !addedData.any { it.loginId == userEvents.first().loginId }) {
-                addedData.addAll(userEvents)
-                db.userEventDao.insertAll(userEvents)
+            if (userEvents.isNotEmpty()) {
+                val data =
+                    AddedData(key = userEvents.first().createdAt, type = DataType.USER_EVENTS)
+                if (!addedData.contains(data)) {
+                    addedData.add(data)
+                    db.userEventDao.insertAll(userEvents)
+                }
             }
         }
 
     private suspend fun saveUserInformationToDatabase(userInformation: GithubUserInformationEntity) =
         coroutineScope {
-            if (!addedData.any { it.loginId == userInformation.loginId }) {
-                addedData.add(userInformation)
+            val data = AddedData(key = userInformation.loginId, type = DataType.USER_INFORMATION)
+            if (!addedData.contains(data)) {
+                addedData.add(data)
                 db.userInformationDao.insert(userInformation)
             }
         }
 
     private suspend fun saveUserRepositoriesToDatabase(userRepositories: List<GithubUserRepositoryEntity>) =
         coroutineScope {
-            if (userRepositories.isNotEmpty() && !addedData.any { it.loginId == userRepositories.first().loginId }) {
-                addedData.addAll(userRepositories)
+            if (userRepositories.isNotEmpty()) {
+                val data = AddedData(
+                    key = userRepositories.first().ownerLoginId,
+                    type = DataType.USER_REPOSITORIES
+                )
+                addedData.add(data)
                 db.userRepositoryDao.insertAll(userRepositories)
             }
         }

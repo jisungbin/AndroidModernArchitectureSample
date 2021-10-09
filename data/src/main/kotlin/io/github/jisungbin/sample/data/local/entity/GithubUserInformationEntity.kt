@@ -15,7 +15,7 @@ import androidx.room.PrimaryKey
 @Entity
 internal data class GithubUserInformationEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    override val loginId: String,
+    val loginId: String,
     val bio: String,
     val avatarUrl: String
-) : GithubUserEntityMarker
+)

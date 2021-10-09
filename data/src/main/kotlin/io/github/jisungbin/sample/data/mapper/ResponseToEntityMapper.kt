@@ -39,7 +39,7 @@ internal fun GithubUserInformationResponse.toEntity() = GithubUserInformationEnt
 internal fun List<GithubUserRepositoryItem>.toEntity(): List<GithubUserRepositoryEntity> {
     return map { userRepository ->
         GithubUserRepositoryEntity(
-            loginId = userRepository.owner?.login ?: "null",
+            ownerLoginId = userRepository.owner?.login ?: "null",
             name = userRepository.name ?: "null",
             description = userRepository.description ?: "",
             language = userRepository.language ?: "",
