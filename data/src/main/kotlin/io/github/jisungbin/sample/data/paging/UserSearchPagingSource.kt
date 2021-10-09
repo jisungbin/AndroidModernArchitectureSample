@@ -26,20 +26,22 @@ internal class UserSearchPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, GithubUser> {
         return try {
             val nextPage = params.key ?: 1
+            val perPage = params.loadSize
             var pagingResult: LoadResult<Int, GithubUser>? = null
 
             CoroutineScope(Dispatchers.IO).launch {
                 repo.search(
                     query = query,
                     page = nextPage,
-                    perPage = params.loadSize
+                    perPage = perPage
                 ).collect { searchedUserResult ->
                     searchedUserResult.doWhen(
                         onSuccess = { users ->
+                            val nextKey = if (users.size < perPage) null else nextPage + 1
                             pagingResult = LoadResult.Page(
                                 data = users,
                                 prevKey = if (nextPage == 1) null else nextPage - 1,
-                                nextKey = nextPage + 1
+                                nextKey = nextKey
                             )
                         },
                         onFail = { exception ->

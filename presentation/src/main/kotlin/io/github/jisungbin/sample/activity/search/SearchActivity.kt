@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.AppBarDefaults
+import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
@@ -50,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
 import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.airbnb.lottie.compose.LottieAnimation
@@ -135,7 +137,7 @@ class SearchActivity : ComponentActivity() {
                                 when {
                                     loadState.refresh is LoadState.Loading -> { // TODO: Why not working?
                                         item {
-                                            SearchingItem(Modifier.fillParentMaxSize())
+                                            SearchingItem(modifier = Modifier.fillParentMaxSize())
                                         }
                                     }
                                     loadState.prepend is LoadState.Loading || loadState.append is LoadState.Loading -> { // TODO: Why not prepend working?
@@ -145,7 +147,10 @@ class SearchActivity : ComponentActivity() {
                                     }
                                     exception != null -> {
                                         item {
-                                            PagingExceptionItem(exception.error)
+                                            PagingExceptionItem(
+                                                throwable = exception.error,
+                                                paginationItems = users
+                                            )
                                         }
                                     }
                                 }
@@ -229,7 +234,10 @@ class SearchActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun PagingExceptionItem(throwable: Throwable) {
+    private fun PagingExceptionItem(
+        throwable: Throwable,
+        paginationItems: LazyPagingItems<GithubUser>
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -246,6 +254,15 @@ class SearchActivity : ComponentActivity() {
                 color = Color.Gray,
                 textAlign = TextAlign.Center
             )
+            Button(
+                modifier = Modifier.padding(top = 5.dp),
+                onClick = { paginationItems.retry() }
+            ) {
+                Text(
+                    text = stringResource(R.string.activity_search_button_retry_load),
+                    color = Color.Gray
+                )
+            }
         }
     }
 
