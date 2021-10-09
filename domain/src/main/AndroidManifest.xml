@@ -7,4 +7,4 @@
   ~ Please see: https://github.com/jisungbin/AndroidModernArchitectureSample/blob/master/LICENSE
   -->
 
-<manifest package="io.github.jisungbin.sample.domain" />
+<manifest package="io.github.jisungbin.githubusers.domain" />

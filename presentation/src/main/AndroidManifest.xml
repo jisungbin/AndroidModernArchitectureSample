@@ -8,7 +8,7 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="io.github.jisungbin.sample">
+    package="io.github.jisungbin.githubusers">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
