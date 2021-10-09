@@ -15,14 +15,14 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.scopes.ViewModelScoped
 import io.github.jisungbin.sample.domain.repo.GithubUserRepo
-import io.github.jisungbin.sample.domain.usecase.GithubUserSearchUseCase
+import io.github.jisungbin.sample.domain.usecase.GithubUserSearchPaginationUseCase
 
 @Module
 @InstallIn(ViewModelComponent::class)
 object UseCaseModule {
     @Provides
     @ViewModelScoped
-    fun provideGithubUserSearchUseCase(repo: GithubUserRepo) = GithubUserSearchUseCase(repo)
+    fun provideGithubUserSearchUseCase(repo: GithubUserRepo) = GithubUserSearchPaginationUseCase(repo)
 
     /*@Provides
     @ViewModelScoped

@@ -12,17 +12,17 @@ package io.github.jisungbin.sample.activity.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.jisungbin.sample.domain.usecase.GithubUserSearchUseCase
+import io.github.jisungbin.sample.domain.usecase.GithubUserSearchPaginationUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val githubUserSearchUseCase: GithubUserSearchUseCase
+    private val githubUserSearchPaginationUseCase: GithubUserSearchPaginationUseCase
 ) : ViewModel() {
     private val defaultPageSize = 30
     private val defaultMaxSize = 100
 
-    suspend fun searchPagination(query: String) = githubUserSearchUseCase(
+    suspend fun searchPagination(query: String) = githubUserSearchPaginationUseCase(
         query = query,
         scope = viewModelScope,
         perPage = defaultPageSize,
