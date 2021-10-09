@@ -30,22 +30,7 @@ interface GithubUserRepo {
 
     suspend fun getInformation(userId: String): Flow<GithubResult<GithubUserInformation>>
 
-    suspend fun getRepositories(
-        userId: String,
-        page: Int,
-        perPage: Int,
-        sort: String,
-        direction: String
-    ): Flow<GithubResult<GithubUserRepositories>>
-
-    suspend fun getRepositoriesPagination(
-        scope: CoroutineScope,
-        userId: String,
-        page: Int,
-        perPage: Int,
-        sort: String,
-        direction: String
-    ): Flow<PagingData<GithubUserRepositories>>
+    suspend fun getRepositories(userId: String): Flow<GithubResult<GithubUserRepositories>>
 
     suspend fun getEvents(
         userId: String,

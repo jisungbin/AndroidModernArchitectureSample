@@ -60,7 +60,7 @@ class GithubUserRepoImpl(private val context: Context, retrofit: Retrofit) : Git
                     }
                 )
             } else {
-                trySend(GithubResult.Success(db.userDao.loadFromSearchKeyword(query).toDomain()))
+                trySend(GithubResult.Success(db.userDao.loadAllFromSearchKeyword(query).toDomain()))
             }
         } catch (exception: Exception) {
             trySend(GithubResult.Fail(exception))
@@ -87,24 +87,7 @@ class GithubUserRepoImpl(private val context: Context, retrofit: Retrofit) : Git
         TODO("Not yet implemented")
     }
 
-    override suspend fun getRepositories(
-        userId: String,
-        page: Int,
-        perPage: Int,
-        sort: String,
-        direction: String
-    ): Flow<GithubResult<GithubUserRepositories>> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getRepositoriesPagination(
-        scope: CoroutineScope,
-        userId: String,
-        page: Int,
-        perPage: Int,
-        sort: String,
-        direction: String
-    ): Flow<PagingData<GithubUserRepositories>> {
+    override suspend fun getRepositories(userId: String): Flow<GithubResult<GithubUserRepositories>> {
         TODO("Not yet implemented")
     }
 

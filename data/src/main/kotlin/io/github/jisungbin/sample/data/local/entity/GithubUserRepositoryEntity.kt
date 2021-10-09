@@ -15,6 +15,7 @@ import androidx.room.PrimaryKey
 @Entity
 internal data class GithubUserRepositoryEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val ownerLoginId: String,
     val name: String,
     val description: String,
     val language: String,

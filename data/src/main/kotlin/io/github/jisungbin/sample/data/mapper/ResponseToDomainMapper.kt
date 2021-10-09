@@ -39,6 +39,7 @@ internal fun List<GithubUserRepositoryItem>.toDomain(): GithubUserRepositories {
     return GithubUserRepositories(
         items = map { userRepository ->
             GithubUserRepositoryItemDomain(
+                ownerLoginId = userRepository.owner?.login ?: "null",
                 name = userRepository.name ?: "null",
                 description = userRepository.description ?: "",
                 language = userRepository.language ?: "",

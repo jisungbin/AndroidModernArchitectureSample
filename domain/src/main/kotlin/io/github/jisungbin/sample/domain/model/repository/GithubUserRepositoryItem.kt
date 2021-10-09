@@ -10,6 +10,7 @@
 package io.github.jisungbin.sample.domain.model.repository
 
 data class GithubUserRepositoryItem(
+    val ownerLoginId: String,
     val name: String,
     val description: String,
     val language: String,

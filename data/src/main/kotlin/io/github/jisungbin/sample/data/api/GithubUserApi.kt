@@ -34,10 +34,9 @@ interface GithubUserApi {
     @GET("/users/{userId}/repos")
     suspend fun getRepositories(
         @Path("userId") userId: String,
-        @Query("page") page: Int,
-        @Query("per_page") perPage: Int,
-        @Query("sort") sort: String,
-        @Query("direction") direction: String
+        @Query("page") page: Int = 3,
+        @Query("per_page") perPage: Int = 1,
+        @Query("sort") sort: String = "updated",
     ): Response<List<GithubUserRepositoryItem>>
 
     @GET("/users/{userId}/events")

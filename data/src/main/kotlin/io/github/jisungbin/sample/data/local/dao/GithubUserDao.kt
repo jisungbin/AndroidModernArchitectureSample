@@ -18,11 +18,8 @@ import io.github.jisungbin.sample.data.local.entity.GithubUserEntity
 @Dao
 internal interface GithubUserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(githubUser: List<GithubUserEntity>)
+    suspend fun insertAll(githubUsers: List<GithubUserEntity>)
 
     @Query("SELECT * FROM GithubUserEntity WHERE searchKeyword LIKE :searchKeyword")
-    suspend fun loadFromSearchKeyword(searchKeyword: String): List<GithubUserEntity>
-
-    @Query("SELECT * FROM GithubUserEntity")
-    suspend fun loadAll(): List<GithubUserEntity>
+    suspend fun loadAllFromSearchKeyword(searchKeyword: String): List<GithubUserEntity>
 }

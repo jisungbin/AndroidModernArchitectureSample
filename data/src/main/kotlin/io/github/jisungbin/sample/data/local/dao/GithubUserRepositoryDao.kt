@@ -10,6 +10,16 @@
 package io.github.jisungbin.sample.data.local.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import io.github.jisungbin.sample.data.local.entity.GithubUserRepositoryEntity
 
 @Dao
-internal interface GithubUserRepositoryDao
+internal interface GithubUserRepositoryDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(githubUserRepositories: List<GithubUserRepositoryEntity>)
+
+    @Query("SELECT * FROM GithubUserRepositoryEntity WHERE ownerLoginId LIKE :ownerLoginId")
+    suspend fun loadAllFromOwnerLoginId(ownerLoginId: String): List<GithubUserRepositoryEntity>
+}
