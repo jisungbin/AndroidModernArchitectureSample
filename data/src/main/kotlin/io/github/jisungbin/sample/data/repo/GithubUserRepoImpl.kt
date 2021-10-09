@@ -13,7 +13,6 @@ import android.content.Context
 import androidx.annotation.IntRange
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import io.github.jisungbin.sample.data.api.GithubUserApi
 import io.github.jisungbin.sample.data.local.GithubUserDatabase
@@ -24,17 +23,16 @@ import io.github.jisungbin.sample.data.local.entity.GithubUserInformationEntity
 import io.github.jisungbin.sample.data.local.entity.GithubUserRepositoryEntity
 import io.github.jisungbin.sample.data.mapper.toDomain
 import io.github.jisungbin.sample.data.mapper.toEntity
+import io.github.jisungbin.sample.data.paging.UserEventsPagingSource
 import io.github.jisungbin.sample.data.paging.UserSearchPagingSource
 import io.github.jisungbin.sample.data.util.NetworkUtil
 import io.github.jisungbin.sample.data.util.isValid
 import io.github.jisungbin.sample.data.util.toFailResult
 import io.github.jisungbin.sample.domain.GithubResult
-import io.github.jisungbin.sample.domain.model.event.GithubUserEvents
 import io.github.jisungbin.sample.domain.repo.GithubUserRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import retrofit2.Retrofit
 
@@ -119,11 +117,16 @@ class GithubUserRepoImpl(private val context: Context, retrofit: Retrofit) : Git
     override suspend fun getEventsPagination(
         scope: CoroutineScope,
         loginId: String,
-        page: Int,
-        perPage: Int
-    ): Flow<PagingData<GithubUserEvents>> {
-        TODO("Not yet implemented")
-    }
+        @IntRange(from = 1, to = 101) perPage: Int,
+        @IntRange(from = 100, to = 501) maxSize: Int
+    ) = Pager(
+        config = PagingConfig(
+            pageSize = perPage,
+            enablePlaceholders = false,
+            maxSize = maxSize
+        ),
+        pagingSourceFactory = { UserEventsPagingSource(repo = this, loginId = loginId) }
+    ).flow.cachedIn(scope = scope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override suspend fun getInformation(loginId: String) = callbackFlow {

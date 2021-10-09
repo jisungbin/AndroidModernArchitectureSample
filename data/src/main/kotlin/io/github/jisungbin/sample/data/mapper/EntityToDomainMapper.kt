@@ -18,11 +18,16 @@ import io.github.jisungbin.sample.domain.model.event.GithubUserEvents
 import io.github.jisungbin.sample.domain.model.information.GithubUserInformation
 import io.github.jisungbin.sample.domain.model.repository.GithubUserRepositories
 import io.github.jisungbin.sample.domain.model.repository.GithubUserRepositoryItem
-import io.github.jisungbin.sample.domain.model.user.GithubUser
+import io.github.jisungbin.sample.domain.model.user.GithubUserItem
+import io.github.jisungbin.sample.domain.model.user.GithubUsers
 
 @JvmName("toDomainGithubUserEntity")
 internal fun List<GithubUserEntity>.toDomain() =
-    map { user -> GithubUser(loginId = user.loginId, avatarUrl = user.avatarUrl) }
+    GithubUsers(
+        items = map { user ->
+            GithubUserItem(loginId = user.loginId, avatarUrl = user.avatarUrl)
+        }.distinctBy { user -> user.loginId }
+    )
 
 @JvmName("toDomainGithubUserInformationEntity")
 internal fun GithubUserInformationEntity.toDomain() = GithubUserInformation(
@@ -42,7 +47,7 @@ internal fun List<GithubUserRepositoryEntity>.toDomain(): GithubUserRepositories
                 language = userRepository.language,
                 stargazersCount = userRepository.stargazersCount
             )
-        }
+        }.distinctBy { repository -> repository.name }
     )
 }
 
@@ -58,6 +63,6 @@ internal fun List<GithubUserEventEntity>.toDomain(): GithubUserEvents {
                 repoName = userEvent.repoName,
                 repoUrl = userEvent.repoUrl
             )
-        }
+        }.distinctBy { event -> event.createdAt }
     )
 }

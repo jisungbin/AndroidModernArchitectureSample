@@ -64,7 +64,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.skydoves.landscapist.coil.CoilImage
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jisungbin.sample.R
-import io.github.jisungbin.sample.domain.model.user.GithubUser
+import io.github.jisungbin.sample.domain.model.user.GithubUserItem
 import io.github.jisungbin.sample.theme.MaterialTheme
 import io.github.jisungbin.sample.ui.SearchableTopAppBar
 import kotlinx.coroutines.delay
@@ -96,7 +96,7 @@ class SearchActivity : ComponentActivity() {
             animateDpAsState(if (scrollState.firstVisibleItemIndex != 0) AppBarDefaults.BottomAppBarElevation else 0.dp)
 
         val swipeRefreshState = rememberSwipeRefreshState(false)
-        var userPaginationFlow by remember { mutableStateOf<Flow<PagingData<GithubUser>>?>(null) }
+        var userPaginationFlow by remember { mutableStateOf<Flow<PagingData<GithubUserItem>>?>(null) }
 
         Scaffold(
             modifier = Modifier.fillMaxSize(),
@@ -192,7 +192,7 @@ class SearchActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun UserChip(user: GithubUser) {
+    private fun UserChip(userItem: GithubUserItem) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -206,12 +206,12 @@ class SearchActivity : ComponentActivity() {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = user.loginId,
+                    text = userItem.loginId,
                     maxLines = 1,
                     color = Color.Black
                 )
                 CoilImage(
-                    imageModel = user.avatarUrl,
+                    imageModel = userItem.avatarUrl,
                     modifier = Modifier.size(80.dp),
                     contentScale = ContentScale.Crop,
                 )
@@ -261,7 +261,7 @@ class SearchActivity : ComponentActivity() {
     @Composable
     private fun PagingExceptionItem(
         throwable: Throwable,
-        paginationItems: LazyPagingItems<GithubUser>
+        paginationItems: LazyPagingItems<GithubUserItem>
     ) {
         Column(
             modifier = Modifier

@@ -11,22 +11,24 @@ package io.github.jisungbin.sample.domain.repo
 
 import androidx.paging.PagingData
 import io.github.jisungbin.sample.domain.GithubResult
+import io.github.jisungbin.sample.domain.model.event.GithubUserEventItem
 import io.github.jisungbin.sample.domain.model.event.GithubUserEvents
 import io.github.jisungbin.sample.domain.model.information.GithubUserInformation
 import io.github.jisungbin.sample.domain.model.repository.GithubUserRepositories
-import io.github.jisungbin.sample.domain.model.user.GithubUser
+import io.github.jisungbin.sample.domain.model.user.GithubUserItem
+import io.github.jisungbin.sample.domain.model.user.GithubUsers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 
 interface GithubUserRepo {
-    suspend fun search(query: String, page: Int, perPage: Int): Flow<GithubResult<List<GithubUser>>>
+    suspend fun search(query: String, page: Int, perPage: Int): Flow<GithubResult<GithubUsers>>
 
     suspend fun searchPagination(
         scope: CoroutineScope,
         query: String,
         perPage: Int,
         maxSize: Int
-    ): Flow<PagingData<GithubUser>>
+    ): Flow<PagingData<GithubUserItem>>
 
     suspend fun getEvents(
         loginId: String,
@@ -37,9 +39,9 @@ interface GithubUserRepo {
     suspend fun getEventsPagination(
         scope: CoroutineScope,
         loginId: String,
-        page: Int,
-        perPage: Int
-    ): Flow<PagingData<GithubUserEvents>>
+        perPage: Int,
+        maxSize: Int
+    ): Flow<PagingData<GithubUserEventItem>>
 
     suspend fun getInformation(loginId: String): Flow<GithubResult<GithubUserInformation>>
 

@@ -17,16 +17,17 @@ import io.github.jisungbin.sample.data.util.ISO8601Util
 import io.github.jisungbin.sample.domain.model.event.GithubUserEvents
 import io.github.jisungbin.sample.domain.model.information.GithubUserInformation
 import io.github.jisungbin.sample.domain.model.repository.GithubUserRepositories
-import io.github.jisungbin.sample.domain.model.user.GithubUser
+import io.github.jisungbin.sample.domain.model.user.GithubUserItem
+import io.github.jisungbin.sample.domain.model.user.GithubUsers
 
 private typealias GithubUserRepositoryItemDomain = io.github.jisungbin.sample.domain.model.repository.GithubUserRepositoryItem
 private typealias GithubUserEventItemDomain = io.github.jisungbin.sample.domain.model.event.GithubUserEventItem
 
-internal fun GithubUsersResponse.toDomain(): List<GithubUser> {
-    return items?.map { user ->
-        GithubUser(loginId = user.login ?: "null", avatarUrl = user.avatarUrl ?: "")
+internal fun GithubUsersResponse.toDomain() = GithubUsers(
+    items = items?.map { user ->
+        GithubUserItem(loginId = user.login ?: "null", avatarUrl = user.avatarUrl ?: "")
     } ?: emptyList()
-}
+)
 
 internal fun GithubUserInformationResponse.toDomain() = GithubUserInformation(
     bio = bio ?: "",
