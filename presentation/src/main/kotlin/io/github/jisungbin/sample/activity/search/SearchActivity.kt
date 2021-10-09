@@ -12,6 +12,7 @@ package io.github.jisungbin.sample.activity.search
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -19,7 +20,6 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -50,8 +50,9 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
@@ -76,6 +77,9 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SearchActivity : ComponentActivity() {
+
+    private val vm: SearchViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -88,7 +92,6 @@ class SearchActivity : ComponentActivity() {
 
     @Composable
     private fun Screen() {
-        val vm: SearchViewModel = viewModel()
         val scrollState = rememberLazyListState()
         val focusManager = LocalFocusManager.current
         val coroutineScope = rememberCoroutineScope()
@@ -203,19 +206,30 @@ class SearchActivity : ComponentActivity() {
             backgroundColor = Color.White,
             elevation = 2.dp
         ) {
-            Row(
-                modifier = Modifier.padding(horizontal = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
+            ConstraintLayout(modifier = Modifier.padding(vertical = 8.dp)) {
+                val (loginId, avatar) = createRefs()
+
                 Text(
+                    modifier = Modifier.constrainAs(loginId) {
+                        start.linkTo(parent.start)
+                        end.linkTo(avatar.start, 8.dp)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                    },
                     text = userItem.loginId,
                     maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                     color = Color.Black
                 )
                 CoilImage(
+                    modifier = Modifier
+                        .size(80.dp)
+                        .constrainAs(avatar) {
+                            end.linkTo(parent.end)
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                        },
                     imageModel = userItem.avatarUrl,
-                    modifier = Modifier.size(80.dp),
                     contentScale = ContentScale.Crop,
                 )
             }

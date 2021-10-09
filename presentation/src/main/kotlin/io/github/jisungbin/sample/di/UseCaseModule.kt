@@ -15,6 +15,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.scopes.ViewModelScoped
 import io.github.jisungbin.sample.domain.repo.GithubUserRepo
+import io.github.jisungbin.sample.domain.usecase.GithubUserEventsPaginationUseCase
+import io.github.jisungbin.sample.domain.usecase.GithubUserInformationUseCase
+import io.github.jisungbin.sample.domain.usecase.GithubUserRepositoriesUseCase
 import io.github.jisungbin.sample.domain.usecase.GithubUserSearchPaginationUseCase
 
 @Module
@@ -22,9 +25,21 @@ import io.github.jisungbin.sample.domain.usecase.GithubUserSearchPaginationUseCa
 object UseCaseModule {
     @Provides
     @ViewModelScoped
-    fun provideGithubUserSearchUseCase(repo: GithubUserRepo) = GithubUserSearchPaginationUseCase(repo)
+    fun provideGithubUserSearchUseCase(repo: GithubUserRepo) =
+        GithubUserSearchPaginationUseCase(repo)
 
-    /*@Provides
+    @Provides
     @ViewModelScoped
-    fun provideGithubUserInformationUseCase(repo: GithubUserRepo) = GithubUserInformationUseCase(repo)*/
+    fun provideGithubUserEventsPaginationUseCase(repo: GithubUserRepo) =
+        GithubUserEventsPaginationUseCase(repo)
+
+    @Provides
+    @ViewModelScoped
+    fun provideGithubUserInformationUseCase(repo: GithubUserRepo) =
+        GithubUserInformationUseCase(repo)
+
+    @Provides
+    @ViewModelScoped
+    fun provideGithubUserRepositoriesUseCase(repo: GithubUserRepo) =
+        GithubUserRepositoriesUseCase(repo)
 }

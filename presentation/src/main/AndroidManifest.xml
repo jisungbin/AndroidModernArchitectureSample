@@ -32,6 +32,7 @@
         </activity>
 
         <activity android:name=".activity.profile.ProfileActivity" />
+        <activity android:name=".ui.imageviewer.ImageViewActivity" />
 
     </application>
 
