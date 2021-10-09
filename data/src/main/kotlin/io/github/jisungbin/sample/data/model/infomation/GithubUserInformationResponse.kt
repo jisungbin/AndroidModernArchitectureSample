@@ -22,10 +22,10 @@ data class GithubUserInformationResponse(
     val followingUrl: String? = null,
 
     @field:JsonProperty("twitter_username")
-    val twitterUsername: Any? = null,
+    val twitterUsername: String? = null,
 
     @field:JsonProperty("bio")
-    val bio: Any? = null,
+    val bio: String? = null,
 
     @field:JsonProperty("created_at")
     val createdAt: String? = null,
@@ -49,7 +49,7 @@ data class GithubUserInformationResponse(
     val siteAdmin: Boolean? = null,
 
     @field:JsonProperty("company")
-    val company: Any? = null,
+    val company: String? = null,
 
     @field:JsonProperty("id")
     val id: Int? = null,
@@ -61,13 +61,13 @@ data class GithubUserInformationResponse(
     val gravatarId: String? = null,
 
     @field:JsonProperty("email")
-    val email: Any? = null,
+    val email: String? = null,
 
     @field:JsonProperty("organizations_url")
     val organizationsUrl: String? = null,
 
     @field:JsonProperty("hireable")
-    val hireable: Any? = null,
+    val hireable: Boolean? = null,
 
     @field:JsonProperty("starred_url")
     val starredUrl: String? = null,
@@ -100,10 +100,10 @@ data class GithubUserInformationResponse(
     val following: Int? = null,
 
     @field:JsonProperty("name")
-    val name: Any? = null,
+    val name: String? = null,
 
     @field:JsonProperty("location")
-    val location: Any? = null,
+    val location: String? = null,
 
     @field:JsonProperty("node_id")
     val nodeId: String? = null

@@ -9,6 +9,7 @@
 
 package io.github.jisungbin.sample.data.mapper
 
+import io.github.jisungbin.sample.data.model.infomation.GithubUserInformationResponse
 import io.github.jisungbin.sample.data.model.user.GithubUsersResponse
 import io.github.jisungbin.sample.domain.model.user.GithubUser
 
@@ -17,3 +18,5 @@ internal fun GithubUsersResponse.toDomain(): List<GithubUser> {
         GithubUser(loginId = user.loginId ?: "null", avatarUrl = user.avatarUrl ?: "")
     } ?: emptyList()
 }
+
+internal fun GithubUserInformationResponse.toDomain(): List<>

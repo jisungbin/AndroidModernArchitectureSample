@@ -9,6 +9,7 @@
 
 package io.github.jisungbin.sample.data.api
 
+import io.github.jisungbin.sample.data.model.event.GithubUserEventItem
 import io.github.jisungbin.sample.data.model.infomation.GithubUserInformationResponse
 import io.github.jisungbin.sample.data.model.repository.GithubUserRepositoryItem
 import io.github.jisungbin.sample.data.model.user.GithubUsersResponse
@@ -25,6 +26,11 @@ interface GithubUserApi {
         @Query("per_page") perPage: Int
     ): Response<GithubUsersResponse>
 
+    @GET("/users/{userId}")
+    suspend fun getInformation(
+        @Path("userId") userId: String
+    ): Response<GithubUserInformationResponse>
+
     @GET("/users/{userId}/repos")
     suspend fun getRepositories(
         @Path("userId") userId: String,
@@ -34,8 +40,10 @@ interface GithubUserApi {
         @Query("direction") direction: String
     ): Response<List<GithubUserRepositoryItem>>
 
-    @GET("/users/{userId}")
-    suspend fun getInformation(
+    @GET("/users/{userId}/events")
+    suspend fun getEvents(
         @Path("userId") userId: String,
-    ): Response<GithubUserInformationResponse>
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int,
+    ): Response<List<GithubUserEventItem>>
 }
