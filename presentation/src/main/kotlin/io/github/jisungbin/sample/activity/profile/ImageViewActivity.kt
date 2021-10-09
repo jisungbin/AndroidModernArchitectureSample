@@ -7,7 +7,7 @@
  * Please see: https://github.com/jisungbin/AndroidModernArchitectureSample/blob/master/LICENSE
  */
 
-package io.github.jisungbin.sample.ui.imageviewer
+package io.github.jisungbin.sample.activity.profile
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

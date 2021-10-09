@@ -13,7 +13,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jisungbin.sample.R
-import io.github.jisungbin.sample.activity.search.composable.SearchingOrEmptyUsers
 import io.github.jisungbin.sample.activity.search.composable.Users
 import io.github.jisungbin.sample.domain.model.user.GithubUserItem
 import io.github.jisungbin.sample.theme.MaterialTheme
@@ -70,7 +68,7 @@ class SearchActivity : ComponentActivity() {
         val searchTopAppBarShadow =
             animateDpAsState(if (scrollState.firstVisibleItemIndex != 0) AppBarDefaults.BottomAppBarElevation else 0.dp)
 
-        var userPaginationFlow by remember { mutableStateOf<Flow<PagingData<GithubUserItem>>?>(null) }
+        var usersPaginationFlow by remember { mutableStateOf<Flow<PagingData<GithubUserItem>>?>(null) }
 
         Scaffold(
             modifier = Modifier.fillMaxSize(),
@@ -88,19 +86,13 @@ class SearchActivity : ComponentActivity() {
                     onSearchDoneClickAction = { searchFieldValue ->
                         coroutineScope.launch {
                             focusManager.clearFocus()
-                            userPaginationFlow = vm.searchPagination(searchFieldValue.text)
+                            usersPaginationFlow = vm.searchPagination(searchFieldValue.text)
                         }
                     }
                 )
             }
         ) {
-            Crossfade(userPaginationFlow != null) { isUserSearched -> // TODO: code clean up
-                if (isUserSearched) {
-                    Users(users = userPaginationFlow!!, scrollState = scrollState)
-                } else {
-                    SearchingOrEmptyUsers(searching = false)
-                }
-            }
+            Users(usersPagingDataFlow = usersPaginationFlow, scrollState = scrollState)
         }
     }
 }

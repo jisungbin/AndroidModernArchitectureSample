@@ -10,11 +10,14 @@
 package io.github.jisungbin.sample.activity.profile.composable
 
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,7 +31,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,20 +50,58 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.paging.LoadState
 import androidx.paging.PagingData
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.skydoves.landscapist.coil.CoilImage
 import io.github.jisungbin.sample.R
+import io.github.jisungbin.sample.activity.profile.ProfileViewModel
 import io.github.jisungbin.sample.domain.model.information.GithubUserInformation
 import io.github.jisungbin.sample.domain.model.repository.GithubUserRepositories
 import io.github.jisungbin.sample.domain.model.repository.GithubUserRepositoryItem
 import io.github.jisungbin.sample.domain.model.user.GithubUserItem
+import io.github.jisungbin.sample.ui.PagingExceptionItem
 import io.github.jisungbin.sample.util.Web
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 @Composable
-fun Profile(_user: State<GithubUserInformation>) {
-    val user = _user.value
+fun Profile(user: GithubUserInformation) {
+    val vm: ProfileViewModel = viewModel()
+    val swipeRefreshState = rememberSwipeRefreshState(false)
+    val coroutineScope = rememberCoroutineScope()
 
+    SwipeRefresh(
+        state = swipeRefreshState,
+        onRefresh = {
+            coroutineScope.launch {
+                swipeRefreshState.isRefreshing = true
+                // usersLazyPagingItems.refresh()
+                delay(1000)
+                swipeRefreshState.isRefreshing = false
+            }
+        },
+        indicator = { state, trigger ->
+            SwipeRefreshIndicator(
+                state = state,
+                refreshTriggerDistance = trigger,
+                scale = true,
+                contentColor = Color.Black
+            )
+        }
+    ) {
+
+    }
+}
+
+@Composable
+private fun Header(user: GithubUserInformation) {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
@@ -121,15 +167,6 @@ fun Repositories(_repositories: GithubUserRepositories) {
             }
         }
     } else {
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .wrapContentWidth(),
-            text = stringResource(R.string.activity_profile_repository_empty),
-            textAlign = TextAlign.Center,
-            color = Color.Gray
-        )
     }
 }
 
@@ -188,5 +225,66 @@ private fun RepositoryInformationChip(
 }
 
 @Composable
-fun Events(events: State<Flow<PagingData<GithubUserItem>>?>) {
+fun Events(eventsPagingDataFlow: Flow<PagingData<GithubUserItem>>?) {
+    if (eventsPagingDataFlow != null) {
+        val eventsLazyPagingItems = eventsPagingDataFlow.collectAsLazyPagingItems()
+
+        if (eventsLazyPagingItems.itemCount > 0) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(items = eventsLazyPagingItems) { event ->
+                    // (user!!)
+                }
+                eventsLazyPagingItems.apply {
+                    val exception = loadState.refresh as? LoadState.Error
+                        ?: loadState.prepend as? LoadState.Error
+                        ?: loadState.append as? LoadState.Error
+
+                    when {
+                        loadState.prepend is LoadState.Loading || loadState.append is LoadState.Loading -> { // TODO: Why not prepend working?
+                            item {
+                                // LoadingItem()
+                            }
+                        }
+                        exception != null -> {
+                            item {
+                                PagingExceptionItem(
+                                    throwable = exception.error,
+                                    paginationItems = eventsLazyPagingItems
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            LoadingOrEmptyItem(message = stringResource(R.string.activity_profile_composable_empty_event))
+        }
+    }
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+private fun LoadingOrEmptyItem(message: String) {
+    var empty by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        delay(2500)
+        empty = true
+    }
+
+    AnimatedVisibility(empty) {
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .wrapContentWidth(),
+            text = message,
+            textAlign = TextAlign.Center,
+            color = Color.Gray
+        )
+    }
 }

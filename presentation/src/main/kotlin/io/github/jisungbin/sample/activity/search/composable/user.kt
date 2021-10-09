@@ -10,6 +10,7 @@
 package io.github.jisungbin.sample.activity.search.composable
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,11 +20,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
@@ -39,13 +38,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.paging.LoadState
 import androidx.paging.PagingData
-import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.airbnb.lottie.compose.LottieAnimation
@@ -58,74 +55,82 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.skydoves.landscapist.coil.CoilImage
 import io.github.jisungbin.sample.R
 import io.github.jisungbin.sample.domain.model.user.GithubUserItem
+import io.github.jisungbin.sample.ui.PagingExceptionItem
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 @Composable
-fun Users(users: Flow<PagingData<GithubUserItem>>, scrollState: LazyListState) {
+fun Users(usersPagingDataFlow: Flow<PagingData<GithubUserItem>>?, scrollState: LazyListState) {
     val swipeRefreshState = rememberSwipeRefreshState(false)
     val coroutineScope = rememberCoroutineScope()
-    val usersLazyPagingItems = users.collectAsLazyPagingItems()
 
-    SwipeRefresh(
-        state = swipeRefreshState,
-        onRefresh = {
-            coroutineScope.launch {
-                swipeRefreshState.isRefreshing = true
-                usersLazyPagingItems.refresh()
-                delay(1000)
-                swipeRefreshState.isRefreshing = false
-            }
-        },
-        indicator = { state, trigger ->
-            SwipeRefreshIndicator(
-                state = state,
-                refreshTriggerDistance = trigger,
-                scale = true,
-                contentColor = Color.Black
-            )
-        }
-    ) {
-        if (usersLazyPagingItems.itemCount > 0) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(16.dp),
-                state = scrollState,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(items = usersLazyPagingItems) { user ->
-                    UserChip(user!!)
+    Crossfade(usersPagingDataFlow != null) { isUserSearched -> // TODO: code clean up
+        if (isUserSearched) {
+            val usersLazyPagingItems = usersPagingDataFlow!!.collectAsLazyPagingItems()
+
+            SwipeRefresh(
+                state = swipeRefreshState,
+                onRefresh = {
+                    coroutineScope.launch {
+                        swipeRefreshState.isRefreshing = true
+                        usersLazyPagingItems.refresh()
+                        delay(1000)
+                        swipeRefreshState.isRefreshing = false
+                    }
+                },
+                indicator = { state, trigger ->
+                    SwipeRefreshIndicator(
+                        state = state,
+                        refreshTriggerDistance = trigger,
+                        scale = true,
+                        contentColor = Color.Black
+                    )
                 }
-                usersLazyPagingItems.apply {
-                    val exception = loadState.refresh as? LoadState.Error
-                        ?: loadState.prepend as? LoadState.Error
-                        ?: loadState.append as? LoadState.Error
+            ) {
+                if (usersLazyPagingItems.itemCount > 0) {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(16.dp),
+                        state = scrollState,
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        items(items = usersLazyPagingItems) { user ->
+                            UserChip(user!!)
+                        }
+                        usersLazyPagingItems.apply {
+                            val exception = loadState.refresh as? LoadState.Error
+                                ?: loadState.prepend as? LoadState.Error
+                                ?: loadState.append as? LoadState.Error
 
-                    when {
-                        loadState.refresh is LoadState.Loading -> { // TODO: Why not working?
-                            item {
-                                SearchingItem(modifier = Modifier.fillParentMaxSize())
-                            }
-                        }
-                        loadState.prepend is LoadState.Loading || loadState.append is LoadState.Loading -> { // TODO: Why not prepend working?
-                            item {
-                                LoadingItem()
-                            }
-                        }
-                        exception != null -> {
-                            item {
-                                PagingExceptionItem(
-                                    throwable = exception.error,
-                                    paginationItems = usersLazyPagingItems
-                                )
+                            when {
+                                loadState.refresh is LoadState.Loading -> { // TODO: Why not working?
+                                    item {
+                                        SearchingItem(modifier = Modifier.fillParentMaxSize())
+                                    }
+                                }
+                                loadState.prepend is LoadState.Loading || loadState.append is LoadState.Loading -> { // TODO: Why not prepend working?
+                                    item {
+                                        LoadingItem()
+                                    }
+                                }
+                                exception != null -> {
+                                    item {
+                                        PagingExceptionItem(
+                                            throwable = exception.error,
+                                            paginationItems = usersLazyPagingItems
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
+                } else {
+                    SearchingOrEmptyUsers(searching = true)
                 }
             }
         } else {
-            SearchingOrEmptyUsers(searching = true)
+            SearchingOrEmptyUsers(searching = false)
         }
     }
 }
@@ -171,7 +176,7 @@ private fun UserChip(userItem: GithubUserItem) {
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun SearchingOrEmptyUsers(searching: Boolean = false) {
+private fun SearchingOrEmptyUsers(searching: Boolean = false) {
     var lottieRawRes by remember { mutableStateOf(R.raw.empty_user) }
     val lottieComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(lottieRawRes))
 
@@ -196,7 +201,7 @@ fun SearchingOrEmptyUsers(searching: Boolean = false) {
         AnimatedVisibility(lottieRawRes == R.raw.empty_user) {
             Text(
                 modifier = Modifier.padding(top = 30.dp),
-                text = stringResource(R.string.activity_search_text_empty_display_users),
+                text = stringResource(R.string.activity_search_composable_empty_display_users),
                 color = Color.Gray
             )
         }
@@ -217,39 +222,6 @@ private fun SearchingItem(modifier: Modifier) {
             iterations = LottieConstants.IterateForever,
             composition = lottieComposition,
         )
-    }
-}
-
-@Composable
-private fun PagingExceptionItem(
-    throwable: Throwable,
-    paginationItems: LazyPagingItems<GithubUserItem>
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(15.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = stringResource(
-                R.string.activity_search_text_exception,
-                throwable.message.toString()
-            ),
-            color = Color.Gray,
-            textAlign = TextAlign.Center
-        )
-        Button(
-            modifier = Modifier.padding(top = 5.dp),
-            onClick = { paginationItems.retry() }
-        ) {
-            Text(
-                text = stringResource(R.string.activity_search_button_retry_load),
-                color = Color.Gray
-            )
-        }
     }
 }
 

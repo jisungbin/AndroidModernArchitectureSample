@@ -10,12 +10,15 @@
 <resources>
     <string name="app_name">Github Users</string>
 
-    <string name="activity_search_topappbar_placeholder_input">Search…</string>
-    <string name="activity_search_text_empty_display_users">The list of users to display is empty!</string>
-    <string name="activity_search_text_exception">An error occurred while searching the users 😢\n\n%s</string>
-    <string name="activity_search_button_retry_load">Retry load</string>
+    <string name="activity_search_composable_empty_display_users">The list of users to display is empty!</string>
 
-    <string name="activity_profile_repository_empty">User\'s repository is empty!</string>
+    <string name="activity_profile_composable_empty_repository">User\'s repository is empty!</string>
+    <string name="activity_profile_composable_empty_event">User\'s event is empty!</string>
 
     <string name="web_toast_non_install_browser">No browser app installed.</string>
+
+    <string name="ui_search_topappbar_placeholder_input">Search…</string>
+
+    <string name="ui_paging_exception_item_button">Retry load</string>
+    <string name="ui_paging_exception_item_message">An error occurred while retrieving information 😢\n\n%s</string>
 </resources>

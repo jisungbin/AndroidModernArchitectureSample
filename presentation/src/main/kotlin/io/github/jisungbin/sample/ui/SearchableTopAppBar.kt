@@ -71,7 +71,7 @@ fun SearchableTopAppBar(
                 },
                 placeholder = {
                     Text(
-                        text = stringResource(R.string.activity_search_topappbar_placeholder_input),
+                        text = stringResource(R.string.ui_search_topappbar_placeholder_input),
                         color = Color.LightGray
                     )
                 },
