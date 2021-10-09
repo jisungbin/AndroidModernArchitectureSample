@@ -14,7 +14,7 @@ import android.widget.Toast
 import dagger.hilt.android.HiltAndroidApp
 import io.github.jisungbin.erratum.Erratum
 import io.github.jisungbin.githubusers.util.extension.toast
-import io.github.jisungbin.sample.BuildConfig
+import io.github.jisungbin.githubusers.BuildConfig
 import java.util.Calendar
 
 @HiltAndroidApp

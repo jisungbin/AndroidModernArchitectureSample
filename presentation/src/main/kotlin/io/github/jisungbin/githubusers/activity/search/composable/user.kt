@@ -55,13 +55,13 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.skydoves.landscapist.coil.CoilImage
+import io.github.jisungbin.githubusers.R
 import io.github.jisungbin.githubusers.activity.profile.ProfileActivity
 import io.github.jisungbin.githubusers.domain.model.user.GithubUserItem
 import io.github.jisungbin.githubusers.ui.paging.PagingExceptionItem
 import io.github.jisungbin.githubusers.ui.paging.PagingLoadingItem
 import io.github.jisungbin.githubusers.ui.paging.PagingRefreshItem
 import io.github.jisungbin.githubusers.util.constant.IntentConstant
-import io.github.jisungbin.sample.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
