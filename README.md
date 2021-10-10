@@ -34,7 +34,7 @@ Github Rest API V3, Flow+Coroutines, Jetpack Compose, Room, Paging3, Dagger-Hilt
 <img src="https://user-images.githubusercontent.com/40740128/136687129-c37fe5df-e0a8-45ff-8071-e218d6d73a3e.png" width="30%"/>
 </div>
 
-앱 메인 화면에서 앱 이름을 클릭하면 오픈소스 라이선스 리스트를 볼 수 있고, 유저 프로필 보기에서 프로필 사진을 누르면 사진을 크게 볼 수 있습니다.
+앱 메인 화면에서 앱 이름을 클릭하면 오픈소스 라이선스 리스트를 볼 수 있고, 유저 프로필 엑티비티에서 프로필 사진을 누르면 사진을 크게 볼 수 있습니다.
 
 
 
