@@ -4,7 +4,7 @@
 
 ---
 
-# Github Users
+# Github Users [한국어](https://github.com/jisungbin/AndroidModernArchitectureSample/blob/master/README-kr.md)
 
 This is a simple sample that searches for a user on GitHub and displays the user's profile, repository, and recent events.
 
