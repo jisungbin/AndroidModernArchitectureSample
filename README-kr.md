@@ -4,7 +4,7 @@
 
 ---
 
-[한국어] [[영어]](https://github.com/jisungbin/AndroidModernArchitectureSample)
+[한국어] [[영어]](https://github.com/jisungbin/AndroidModernArchitectureSample/blob/master/README.md)
 
 # Github Users
 
