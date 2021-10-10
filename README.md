@@ -7,4 +7,4 @@ or <br/>
 https://github.com/jisungbin/AndroidModernArchitectureSample/releases/tag/1.0.0
 
 # Layer
-![image](https://user-images.githubusercontent.com/40740128/136686560-68597d1e-805c-4c32-9824-5d0a7d09c2bf.png)
+![image](https://user-images.githubusercontent.com/40740128/136686589-8815d1af-75f3-43c3-a75b-668b39511b5a.png)
