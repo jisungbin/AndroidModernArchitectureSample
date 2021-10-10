@@ -11,7 +11,6 @@
 - 만약 프로필 조회시, 레포지토리와 이벤트 목록이 비었다면
   - <img src="https://user-images.githubusercontent.com/40740128/136689466-0b4b1cfd-0e68-4be7-a9d6-4d78c10dbf41.png" width="33%" />
 
-
 ## 정보
 
 - 프로필 조회시, 레포지토리와 이벤트 목록이 아무것도 표시되지 않는다면
