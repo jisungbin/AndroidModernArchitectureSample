@@ -40,7 +40,7 @@ Click the app name on the app main screen to see the list of open source license
 
 # Download
 
-[Google Play Store](https://play.google.com/store/apps/details?id=io.github.jisungbin.githubusers) or [Github Release](https://github.com/jisungbin/AndroidModernArchitectureSample /releases/tag/1.0.0) available for download. (Google Play Store may not be displayed as it is under review)
+[Google Play Store](https://play.google.com/store/apps/details?id=io.github.jisungbin.githubusers) or [Github Release](https://github.com/jisungbin/AndroidModernArchitectureSample/releases/tag/1.0.0) available for download. (Google Play Store may not be displayed as it is under review)
 
 ---
 
