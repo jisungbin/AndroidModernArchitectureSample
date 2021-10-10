@@ -4,7 +4,9 @@
 
 ---
 
-## Github Users
+[한국어] [[영어]](https://github.com/jisungbin/AndroidModernArchitectureSample)
+
+# Github Users
 
 깃허브 유저를 검색하고 해당 유저의 프로필과 레포지토리, 그리고 최근 이벤트를 보여주는 간단한 샘플 입니다.
 
@@ -27,7 +29,7 @@ Github Rest API V3, Flow+Coroutines, Jetpack Compose, Room, Paging3, Dagger-Hilt
 
 
 
-## Preview
+# Preview
 
 <div>
 <img src="https://user-images.githubusercontent.com/40740128/136687125-d20e861e-3711-4d99-ab06-87a8e025cf47.png" width="30%"/>
@@ -38,13 +40,13 @@ Github Rest API V3, Flow+Coroutines, Jetpack Compose, Room, Paging3, Dagger-Hilt
 
 
 
-## Download
+# Download
 
 [구글 플레이스토어](https://play.google.com/store/apps/details?id=io.github.jisungbin.githubusers) 또는 [깃허브 릴리즈](https://github.com/jisungbin/AndroidModernArchitectureSample/releases/tag/1.0.0) 에서 다운로드가 가능합니다. (구글 플레이스토어는 심사중이라 표시되지 않을 수 있습니다)
 
 ---
 
-## License
+# License
 
 Github Users © 2021 Ji Sungbin. all rights reserved.
 
@@ -52,4 +54,4 @@ Github Users은 [Apache 2.0](https://github.com/jisungbin/AndroidModernArchitect
 
 
 
-## Happy Coding :)
+# Happy Coding :)
