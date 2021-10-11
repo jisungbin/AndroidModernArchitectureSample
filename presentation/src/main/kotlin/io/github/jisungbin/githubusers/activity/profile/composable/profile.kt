@@ -85,7 +85,6 @@ fun Profile(loginId: String) {
     }
 
     LaunchedEffect(vm) {
-        println("start: $loginId")
         vm.observe(
             lifecycleOwner = lifeCycleOwner,
             state = { state ->

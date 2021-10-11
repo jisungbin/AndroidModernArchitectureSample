@@ -94,7 +94,6 @@ class GithubUserRepoImpl(private val context: Context, retrofit: Retrofit) : Git
         @IntRange(from = 1) page: Int,
         @IntRange(from = 1, to = 101) perPage: Int
     ) = callbackFlow {
-        println("Called: $loginId")
         try {
             if (networkAvailable) {
                 val request = api.getEvents(loginId = loginId, page = page, perPage = perPage)
