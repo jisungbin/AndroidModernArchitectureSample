@@ -62,7 +62,7 @@ fun Repositories(repositories: GithubUserRepositories) {
                 }
             }
         } else {
-            LoadingOrEmptyItem(stringResource(R.string.activity_profile_composable_empty_repository))
+            EmptyItem(stringResource(R.string.activity_profile_composable_empty_repository))
         }
     }
 }

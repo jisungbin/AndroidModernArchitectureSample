@@ -86,7 +86,7 @@ fun Events(eventsPagingDataFlow: Flow<PagingData<GithubUserEventItem>>) {
                 }
             }
         } else {
-            LoadingOrEmptyItem(message = stringResource(R.string.activity_profile_composable_empty_event))
+            EmptyItem(message = stringResource(R.string.activity_profile_composable_empty_event))
         }
     }
 }
