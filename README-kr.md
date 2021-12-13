@@ -42,7 +42,7 @@ Github Rest API V3, Flow+Coroutines, Jetpack Compose, Room, Paging3, Dagger-Hilt
 
 # Download
 
-[구글 플레이스토어](https://play.google.com/store/apps/details?id=io.github.jisungbin.githubusers) 또는 [깃허브 릴리즈](https://github.com/jisungbin/AndroidModernArchitectureSample/releases) 에서 다운로드가 가능합니다. (구글 플레이스토어는 심사중이라 표시되지 않을 수 있습니다)
+[구글 플레이스토어](https://play.google.com/store/apps/details?id=io.github.jisungbin.githubusers) 또는 [깃허브 릴리즈](https://github.com/jisungbin/AndroidModernArchitectureSample/releases) 에서 다운로드가 가능합니다.
 
 ---
 
