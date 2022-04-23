@@ -4,7 +4,7 @@
 
 ---
 
-[[필독 노트]](https://github.com/jisungbin/AndroidModernArchitectureSample/blob/master/NOITE-kr.md) [한국어] [[English]](https://github.com/jisungbin/AndroidModernArchitectureSample/blob/master/README.md)
+[[필독 노트]](https://github.com/jisungbin/AndroidModernArchitectureSample/blob/master/NOTE-kr.md) [한국어] [[English]](https://github.com/jisungbin/AndroidModernArchitectureSample/blob/master/README.md)
 
 # Github Users
 
